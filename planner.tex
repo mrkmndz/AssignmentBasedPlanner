@@ -1,0 +1,47 @@
+% arara: pdflatex: { synctex: on, shell: off} 
+% arara: clean: { files: [ planner.log, planner.aux ] }
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{datenumber}
+\usepackage{xargs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\divisi}{
+	\pagebreak[1]
+	\vskip\medskipamount 
+	\leaders\vrule width \textwidth\vskip0.4pt
+	\vskip\medskipamount
+	\nointerlineskip
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\class}[1]{
+\divisi
+\hspace*{15pt} \textbf{#1}\\
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommandx\assign[4][2=\thedatemonth, 3=error, 4=\thedateyear]{
+{#1}\\
+\hspace*{15pt} \setdatetoday\setdate{#4}{#2}{#3}\datedayname,~\datemonthname~{#3},~\thedateyear\setdatetoday\\
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\assignq[1]{
+{#1}\\
+\hspace*{15pt}?\\
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\id}{ExampleWeekID}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\setlength{\parindent}{0pt}
+{\centering\Large Week~\id\par\vspace{10pt plus 10 pt minus 10 pt}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\class{ExampleClass1}
+\class{ExampleClass1}
+	\assign{ExampleAssignment1}[12][3]
+\class{ExampleClass1}
+	\assign{ExampleAssignment2}[12][3]
+\class{ExampleClass1}
+	\assignq{ExampleAssignment3 w/o date}
+	\assignq{ExampleAssignment3 w/o date}
+\end{document}
