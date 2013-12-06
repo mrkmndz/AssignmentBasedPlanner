@@ -1,0 +1,74 @@
+\ProvidesPackage{assign}
+\RequirePackage{datenumber}
+\RequirePackage{xparse}
+\RequirePackage{etoolbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\divisi}{
+	\pagebreak[1]
+	\vskip\medskipamount 
+	\leaders\vrule width \textwidth\vskip0.4pt
+	\vskip\medskipamount
+	\nointerlineskip
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\class}[1]{
+\divisi
+\noindent\hspace*{15pt} \textbf{#1}\\
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareDocumentCommand \assign { m o o o}{
+	\ifboolexpr{
+		test {\IfNoValueTF{#2}}
+		and 
+		test {\IfNoValueTF{#3}}
+		and
+		test {\IfNoValueTF{#4}}
+	}
+		{
+			{#1}\\
+			\hspace*{15pt}?\\
+		}
+		{
+			\ifboolexpr{
+				test {\ifblank{#2}}
+				and 
+				test {\notblank{#3}}
+				and
+				test {\notblank{#4}}
+			}
+				{
+					{#1}\\
+					\hspace*{15pt} \setdatetoday\setdate{#4}{\thedatemonth}{#3}\datedayname,~\datemonthname~{#3},~\thedateyear\setdatetoday\\
+				}
+				{
+					\ifboolexpr{
+						test {\notblank{#2}}
+						and 
+						test {\notblank{#3}}
+						and
+						test {\ifblank{#4}}
+					}
+						{
+							{#1}\\
+							\hspace*{15pt} \setdatetoday\setdate{\thedateyear}{#2}{#3}\datedayname,~\datemonthname~{#3},~\thedateyear\setdatetoday\\
+						}
+						{
+							\ifboolexpr{
+								test {\ifblank{#2}}
+								and 
+								test {\notblank{#3}}
+								and
+								test {\ifblank{#4}}
+							}
+								{
+									{#1}\\
+									\hspace*{15pt} \setdatetoday\setdate{\thedateyear}{\thedatemonth}{#3}\datedayname,~\datemonthname~{#3},~\thedateyear\setdatetoday\\
+								}
+								{
+									{#1}\\
+									\hspace*{15pt} \setdatetoday\setdate{#4}{#2}{#3}\datedayname,~\datemonthname~{#3},~\thedateyear\setdatetoday\\
+								}
+						}
+				}
+		}
+}
