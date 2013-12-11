@@ -25,6 +25,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcounter{dateone}\newcounter{datetwo}
 \DeclareDocumentCommand \assign { m o o o}{ 
+	\setdatetoday
 	\setmydatenumber{dateone}{\the\year}{\the\month}{\the\day}%
 	\ifboolexpr{
 		test {\IfNoValueTF{#2}}
@@ -45,20 +46,7 @@
 				and
 				test {\IfNoValueTF{#4}}
 			}
-				{
-					\setdatetoday\setdate{\thedateyear}{\thedatemonth}{#2}
-					\setmydatenumber{datetwo}{\thedateyear}{\thedatemonth}{#2}%
-					\addtocounter{datetwo}{-\thedateone}%
-					\ifnumcomp{\value{datetwo}}{<}{2}
-					{
-						\hl{#1}\\
-						\hspace*{15pt} \hl{\hbox{\datedayname,~\datemonthname~{#2},~\thedateyear}}\\
-					}
-					{
-						{#1}\\
-						\hspace*{15pt} \datedayname,~\datemonthname~{#2},~\thedateyear\\
-					}
-				}
+				{\setdate{\thedateyear}{\thedatemonth}{#2}}
 				{
 					\ifboolexpr{
 						not test {\IfNoValueTF{#2}}
@@ -67,35 +55,20 @@
 						and
 						test {\IfNoValueTF{#4}}
 					}
-						{
-							\setdatetoday\setdate{\thedateyear}{#2}{#3}
-							\setmydatenumber{datetwo}{\thedateyear}{#2}{#3}%
-							\addtocounter{datetwo}{-\thedateone}%
-							\ifnumcomp{\value{datetwo}}{<}{2}
-							{
-								\hl{#1}\\
-								\hspace*{15pt} \hl{\hbox{\datedayname,~\datemonthname~{#3},~\thedateyear}}\\
-							}
-							{
-								{#1}\\
-								\hspace*{15pt} \datedayname,~\datemonthname~{#3},~\thedateyear\\
-							}
-						}
-						{
-							\setdatetoday\setdate{#4}{#2}{#3}
-							\setmydatenumber{datetwo}{#4}{#2}{#3}%
-							\addtocounter{datetwo}{-\thedateone}%
-							\ifnumcomp{\value{datetwo}}{<}{2}
-							{
-								\hl{#1}\\
-								\hspace*{15pt}\hl{\hbox{\datedayname,~\datemonthname~{#3},~\thedateyear}}\\
-							}
-							{
-								{#1}\\
-								\hspace*{15pt}\datedayname,~\datemonthname~{#3},~\thedateyear\\
-							}
-						}
+						{\setdate{\thedateyear}{#2}{#3}}
+						{\setdate{#4}{#2}{#3}}
 				}
+			\setmydatenumber{datetwo}{\thedateyear}{\thedatemonth}{\thedateday}%
+			\addtocounter{datetwo}{-\thedateone}%
+			\ifnumcomp{\value{datetwo}}{<}{2}
+			{
+				\hl{#1}\\
+				\hspace*{15pt}\hl{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
+			}
+			{
+				{#1}\\
+				\hspace*{15pt}\datedayname,~\datemonthname~{\thedateday},~\thedateyear\\
+			}
 		}
 	\setdatetoday
 }
