@@ -6,6 +6,8 @@
 \RequirePackage{color}
 \RequirePackage{soul}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{dateone}\newcounter{datetwo}\newcounter{truemonth}\newcounter{trueyear}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\high}[1]{#1}
 \DeclareOption{highlight}{
 \renewcommand{\high}[1]{\hl{#1}}
@@ -13,6 +15,8 @@
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\setstablemonth}[2]{
+\setcounter{truemonth}{\month}
+\setcounter{trueyear}{\year}
 \month=#1
 \year=#2
 }
@@ -30,10 +34,9 @@
 \noindent\hspace*{15pt} \textbf{#1}\\
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcounter{dateone}\newcounter{datetwo}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	\setdatetoday
-	\setmydatenumber{dateone}{\the\year}{\the\month}{\the\day}%
+	\setmydatenumber{dateone}{\thetrueyear}{\thetruemonth}{\day}%
 	\ifboolexpr{
 		test {\IfNoValueTF{#2}}
 		and 
