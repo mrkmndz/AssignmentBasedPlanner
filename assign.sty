@@ -38,6 +38,31 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%ARRAYFUNCTIONS%%%%%%%%%%%%%%
+%make a new array by making a new counter called ARRAYarraysize Syntax: \@newarray{ARRAY}
+\newcommand\@newarray[1]{
+	\newcounter{#1arraysize}
+}
+%set a value in an array by making a new function called \ARRAYINDEX Syntax: \@setarrayvalue{ARRAY}{INDEX}{VALUE}
+\newcommand\@setarrayvalue[3]{%
+	\csdef{#1#2}{#3}
+	%if this INDEX is bigger than the current arraysize, make the arraysize the index
+	\ifnumcomp{\value{#1arraysize}}{<}{\value{#2}}
+	{\setcounter{#1arraysize}{#2}}
+	%if not keep it the same
+	{}
+}
+%set the next value in an array by making a new function called \ARRAY(arraysize+1) Syntax: \@appendtoarray{ARRAY}{VALUE}
+\newcommand\@appendtoarray[2]{%
+	\stepcounter{#1arraysize}%
+	\csdef{#1\csuse{the#1arraysize}}{#2}
+}
+%retrieve a value from an array by calling a new function called \ARRAYINDEX Syntax: \@retrievefromarray{ARRAY}{INDEX}{VALUE}
+\newcommand\@retrievefromarray[2]{%
+	\csuse{#1#2}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
 %save the month and year commands for later use
