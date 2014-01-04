@@ -31,7 +31,7 @@
 %process the options
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %making counters we'll need later
 \newcounter{@todaysdatenum}\newcounter{@assignmentdatenum}\newcounter{@truemonth}\newcounter{@trueyear}
@@ -43,25 +43,20 @@
 %make a new array by making a new counter called ARRAYarraysize Syntax: \@newarray{ARRAY}
 \newcommand\@newarray[1]{
 	\newcounter{#1arraysize}
-}
-%set a value in an array by making a new function called \ARRAYINDEX Syntax: \@setarrayvalue{ARRAY}{INDEX}{VALUE}
-\newcommand\@setarrayvalue[3]{%
-	\csdef{#1#2}{#3}
-	%if this INDEX is bigger than the current arraysize, make the arraysize the index
-	\ifnumcomp{\value{#1arraysize}}{<}{\value{#2}}
-	{\setcounter{#1arraysize}{#2}}
-	%if not keep it the same
-	{}
+	\setcounter{#1arraysize}{0}
 }
 %set the next value in an array by making a new function called \ARRAY(arraysize+1) Syntax: \@appendtoarray{ARRAY}{VALUE}
 \newcommand\@appendtoarray[2]{%
 	\stepcounter{#1arraysize}%
-	\csdef{#1\csuse{the#1arraysize}}{#2}
+	\csedef{#1\csuse{the#1arraysize}}{#2}
 }
-%retrieve a value from an array by calling a new function called \ARRAYINDEX Syntax: \@retrievefromarray{ARRAY}{INDEX}{VALUE}
+%retrieve a value from an array by calling a new function called \ARRAYINDEX Syntax: \@retrievefromarray{ARRAY}{INDEX}
 \newcommand\@retrievefromarray[2]{%
 	\csuse{#1#2}
 }
+%%%%%%%%%%%%%%ARRAYS%%%%%%%%%%%%%%%%%%%%%%
+%making arrays we'll need later
+\@newarray{assigninfos}\@newarray{dates}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
@@ -108,6 +103,7 @@
 			\hspace*{15pt} ?\\
 		}
 		{
+			\@appendtoarray{assigninfos}{#1}
 			\ifboolexpr{
 				%Check if there is only one optional value (day)
 				not test {\IfNoValueTF{#2}}
@@ -138,12 +134,13 @@
 				%find the difference between the two absolute datenums, or the number of days between
 				\addtocounter{@assignmentdatenum}{-\the@todaysdatenum}%
 				%check if this gap is less than two.  this is an option not yet exposed to the caller of the package.  it should be, later
-				\ifnumcomp{\value{@assignmentdatenum}}{<}{2}
+				\ifnumcomp{\the@assignmentdatenum}{<}{2}
 				{
 					%if so, highlight the assignment
 					\@high{#1}\\
 					%and highlight and print the due date, in the format Tuesday, January 21, 2014
 					\hspace*{15pt}\@high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
+					\@appendtoarray{dates}{\thedatemonth/\thedateday/\thedateyear}
 				}
 				{
 					%if not, don't highlight the assignment or the due date, but print it the same
@@ -153,4 +150,30 @@
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdatetoday
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%The Calendar Command
+\newcommand\printassignmentcalendar[2]{
+\restoresymbol{lop}{setdate}
+\begin{center}
+\begin{calendar}{#1}{#2}
+%\setlength{\calboxdepth}{.3in}
+\calday[Sunday]{\classday}
+\calday[Monday]{\classday}
+\calday[Tuesday]{\classday}
+\calday[Wednesday]{\classday}
+\calday[Thursday]{\classday}
+\calday[Friday]{\classday}
+\calday[Saturday]{\classday}
+\newcounter{track}
+\setcounter{track}{0}
+ \whileboolexpr
+    { test {\ifnumcomp{\thetrack}{<}{\thedatesarraysize}} }%
+    {	\stepcounter{track}
+	\csedef{bah}{\csuse{dates\csuse{thetrack}}}
+	\csedef{gah}{\csuse{assigninfos\csuse{thetrack}}}
+	\caltext{\bah}{\gah} 
+	}
+\end{calendar}
+\end{center}
 }
