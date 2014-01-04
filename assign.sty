@@ -22,11 +22,11 @@
 %%%%%%%%%%%%%%OPTIONS%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %if no highlight option, make the highlight command into a dummy command that just passes back the argument
-\newcommand{\high}[1]{#1}
+\newcommand{\@high}[1]{#1}
 %highlight option
 \DeclareOption{highlight}{
-%making the \highcommand into a real highlighting command
-\renewcommand{\high}[1]{\hl{#1}}
+%making the \@highcommand into a real highlighting command
+\renewcommand{\@high}[1]{\hl{#1}}
 }
 %process the options
 \ProcessOptions\relax
@@ -34,22 +34,22 @@
 %%%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %making counters we'll need later
-\newcounter{todaysdatenum}\newcounter{assignmentdatenum}\newcounter{truemonth}\newcounter{trueyear}
+\newcounter{@todaysdatenum}\newcounter{@assignmentdatenum}\newcounter{@truemonth}\newcounter{@trueyear}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
 %save the month and year commands for later use
-\setcounter{truemonth}{\month}
-\setcounter{trueyear}{\year}
+\setcounter{@truemonth}{\month}
+\setcounter{@trueyear}{\year}
 %make the year stable
 \month=#1
 \year=#2
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %full page line split
-\newcommand{\divisi}{
+\newcommand{\@divisi}{
 	\pagebreak[1]
 	\vskip\medskipamount 
 	\leaders\vrule width \textwidth\vskip0.4pt
@@ -59,7 +59,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Bolded class title with divider line
 \newcommand{\class}[1]{
-\divisi
+\@divisi
 \noindent\hspace*{15pt} \textbf{#1}\\
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,7 +68,7 @@
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\setdatetoday
 	%Set the todays datenum to the true datenum
-	\setmydatenumber{todaysdatenum}{\thetrueyear}{\thetruemonth}{\day}%
+	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -108,17 +108,17 @@
 						{\setdate{#4}{#2}{#3}}
 				}
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual entry
-				%set the assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
-				\setmydatenumber{assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
+				%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
+				\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
 				%find the difference between the two absolute datenums, or the number of days between
-				\addtocounter{assignmentdatenum}{-\thetodaysdatenum}%
+				\addtocounter{@assignmentdatenum}{-\the@todaysdatenum}%
 				%check if this gap is less than two.  this is an option not yet exposed to the caller of the package.  it should be, later
-				\ifnumcomp{\value{assignmentdatenum}}{<}{2}
+				\ifnumcomp{\value{@assignmentdatenum}}{<}{2}
 				{
 					%if so, highlight the assignment
-					\high{#1}\\
+					\@high{#1}\\
 					%and highlight and print the due date, in the format Tuesday, January 21, 2014
-					\hspace*{15pt}\high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
+					\hspace*{15pt}\@high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
 				}
 				{
 					%if not, don't highlight the assignment or the due date, but print it the same
