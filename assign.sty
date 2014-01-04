@@ -1,5 +1,7 @@
 \ProvidesPackage{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%DEPENDENCIES%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %need in order to resolve conflict between termcal and datenumber
 \RequirePackage{savesym}
 %need to make calendar
@@ -17,8 +19,7 @@
 %need for highlighting
 \RequirePackage{soul}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%making counters we'll need later
-\newcounter{todaysdatenum}\newcounter{assignmentdatenum}\newcounter{truemonth}\newcounter{trueyear}
+%%%%%%%%%%%%%%OPTIONS%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %if no highlight option, make the highlight command into a dummy command that just passes back the argument
 \newcommand{\high}[1]{#1}
@@ -29,6 +30,13 @@
 }
 %process the options
 \ProcessOptions\relax
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%making counters we'll need later
+\newcounter{todaysdatenum}\newcounter{assignmentdatenum}\newcounter{truemonth}\newcounter{trueyear}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
