@@ -4,6 +4,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage{pdflscape}
 \usepackage[highlight]{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setstablemonth{12}{2013}
@@ -23,5 +24,8 @@
 \class{ExampleClass4}
 	\assign{ExampleAssignment5 w/o date}
 	\assign{ExampleAssignment6 w/o date}
+\begin{landscape}
+\setlength{\calwidth}{\linewidth}
 \printassignmentcalendar{12/1/2013}{2}
+\end{landscape}
 \end{document}

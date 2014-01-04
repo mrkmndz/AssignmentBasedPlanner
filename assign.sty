@@ -34,29 +34,15 @@
 %%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %making counters we'll need later
-\newcounter{@todaysdatenum}\newcounter{@assignmentdatenum}\newcounter{@truemonth}\newcounter{@trueyear}
+\newcounter{@todaysdatenum}
+\newcounter{@assignmentdatenum}
+\newcounter{@truemonth}
+\newcounter{@trueyear}
+\newcounter{@infosarraysize}
+\newcounter{@datesarraysize}
+\newcounter{@track}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%ARRAYFUNCTIONS%%%%%%%%%%%%%%
-%make a new array by making a new counter called ARRAYarraysize Syntax: \@newarray{ARRAY}
-\newcommand\@newarray[1]{
-	\newcounter{#1arraysize}
-	\setcounter{#1arraysize}{0}
-}
-%set the next value in an array by making a new function called \ARRAY(arraysize+1) Syntax: \@appendtoarray{ARRAY}{VALUE}
-\newcommand\@appendtoarray[2]{%
-	\stepcounter{#1arraysize}%
-	\csedef{#1\csuse{the#1arraysize}}{#2}
-}
-%retrieve a value from an array by calling a new function called \ARRAYINDEX Syntax: \@retrievefromarray{ARRAY}{INDEX}
-\newcommand\@retrievefromarray[2]{%
-	\csuse{#1#2}
-}
-%%%%%%%%%%%%%%ARRAYS%%%%%%%%%%%%%%%%%%%%%%
-%making arrays we'll need later
-\@newarray{assigninfos}\@newarray{dates}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
@@ -103,7 +89,6 @@
 			\hspace*{15pt} ?\\
 		}
 		{
-			\@appendtoarray{assigninfos}{#1}
 			\ifboolexpr{
 				%Check if there is only one optional value (day)
 				not test {\IfNoValueTF{#2}}
@@ -140,13 +125,16 @@
 					\@high{#1}\\
 					%and highlight and print the due date, in the format Tuesday, January 21, 2014
 					\hspace*{15pt}\@high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
-					\@appendtoarray{dates}{\thedatemonth/\thedateday/\thedateyear}
 				}
 				{
 					%if not, don't highlight the assignment or the due date, but print it the same
 					{#1}\\
 					\hspace*{15pt}\datedayname,~\datemonthname~{\thedateday},~\thedateyear\\
 				}
+				\stepcounter{@infosarraysize}
+				\stepcounter{@datesarraysize}%
+				\csedef{@infos\csuse{the@infosarraysize}}{#1}
+				\csedef{@dates\csuse{the@datesarraysize}}{\thedatemonth/\thedateday/\thedateyear}
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdatetoday
@@ -154,10 +142,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %The Calendar Command
 \newcommand\printassignmentcalendar[2]{
-\restoresymbol{lop}{setdate}
+\restoresymbol{datenumber}{setdate}
 \begin{center}
 \begin{calendar}{#1}{#2}
-%\setlength{\calboxdepth}{.3in}
+\setlength{\calboxdepth}{.3in}
 \calday[Sunday]{\classday}
 \calday[Monday]{\classday}
 \calday[Tuesday]{\classday}
@@ -165,14 +153,11 @@
 \calday[Thursday]{\classday}
 \calday[Friday]{\classday}
 \calday[Saturday]{\classday}
-\newcounter{track}
-\setcounter{track}{0}
+\setcounter{@track}{0}
  \whileboolexpr
-    { test {\ifnumcomp{\thetrack}{<}{\thedatesarraysize}} }%
-    {	\stepcounter{track}
-	\csedef{bah}{\csuse{dates\csuse{thetrack}}}
-	\csedef{gah}{\csuse{assigninfos\csuse{thetrack}}}
-	\caltext{\bah}{\gah} 
+    { test {\ifnumcomp{\the@track}{<}{\the@datesarraysize}} }%
+    {	\stepcounter{@track}
+	\caltext{\csuse{@dates\csuse{the@track}}}{\csuse{@infos\csuse{the@track}}} 
 	}
 \end{calendar}
 \end{center}
