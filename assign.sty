@@ -1,29 +1,46 @@
 \ProvidesPackage{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%need in order to resolve conflict between termcal and datenumber
 \RequirePackage{savesym}
+%need to make calendar
 \RequirePackage{termcal}
+%turn termcal's \setdate into \origsetdate
 \savesymbol{setdate}
+%need for date manipulation
 \RequirePackage{datenumber}
+%need for making function with optional arguments work well
 \RequirePackage{xparse}
+%need for various programming things
 \RequirePackage{etoolbox}
+%need for coloring the highlighting
 \RequirePackage{color}
+%need for highlighting
 \RequirePackage{soul}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcounter{dateone}\newcounter{datetwo}\newcounter{truemonth}\newcounter{trueyear}
+%making counters we'll need later
+\newcounter{todaysdatenum}\newcounter{assignmentdatenum}\newcounter{truemonth}\newcounter{trueyear}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%if no highlight option, make the highlight command into a dummy command that just passes back the argument
 \newcommand{\high}[1]{#1}
+%highlight option
 \DeclareOption{highlight}{
+%making the \highcommand into a real highlighting command
 \renewcommand{\high}[1]{\hl{#1}}
 }
+%process the options
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
+%save the month and year commands for later use
 \setcounter{truemonth}{\month}
 \setcounter{trueyear}{\year}
+%make the year stable
 \month=#1
 \year=#2
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%full page line split
 \newcommand{\divisi}{
 	\pagebreak[1]
 	\vskip\medskipamount 
@@ -32,15 +49,20 @@
 	\nointerlineskip
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Bolded class title with divider line
 \newcommand{\class}[1]{
 \divisi
 \noindent\hspace*{15pt} \textbf{#1}\\
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day}
 \DeclareDocumentCommand \assign { m o o o}{ 
+	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\setdatetoday
-	\setmydatenumber{dateone}{\thetrueyear}{\thetruemonth}{\day}%
+	%Set the todays datenum to the true datenum
+	\setmydatenumber{todaysdatenum}{\thetrueyear}{\thetruemonth}{\day}%
 	\ifboolexpr{
+		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
 		and 
 		test {\IfNoValueTF{#3}}
@@ -48,40 +70,54 @@
 		test {\IfNoValueTF{#4}}
 	}
 		{
+			%if so, just put the description and the question mark, never with highlighting
 			{#1}\\
 			\hspace*{15pt} ?\\
 		}
 		{
 			\ifboolexpr{
+				%Check if there is only one optional value (day)
 				not test {\IfNoValueTF{#2}}
 				and 
 				test {\IfNoValueTF{#3}}
 				and
 				test {\IfNoValueTF{#4}}
 			}
+				%if so, set the datenumber package date to stable year, stable month, specified day
 				{\setdate{\thedateyear}{\thedatemonth}{#2}}
 				{
 					\ifboolexpr{
+						%Check if there are two optional values (month, day)
 						not test {\IfNoValueTF{#2}}
 						and 
 						not test {\IfNoValueTF{#3}}
 						and
 						test {\IfNoValueTF{#4}}
 					}
+						%if so, set the datenumber package date to stable year, specified month, specified day
 						{\setdate{\thedateyear}{#2}{#3}}
+						%if not, then all three optional arguments must have been given, so set the datenumber package date to specified year, specified month, specified day
 						{\setdate{#4}{#2}{#3}}
 				}
-			\setmydatenumber{datetwo}{\thedateyear}{\thedatemonth}{\thedateday}%
-			\addtocounter{datetwo}{-\thedateone}%
-			\ifnumcomp{\value{datetwo}}{<}{2}
-			{
-				\high{#1}\\
-				\hspace*{15pt}\high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
-			}
-			{
-				{#1}\\
-				\hspace*{15pt}\datedayname,~\datemonthname~{\thedateday},~\thedateyear\\
-			}
+			%for the instances that some optional argument, hence date, has been given, now we'll make the actual entry
+				%set the assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
+				\setmydatenumber{assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
+				%find the difference between the two absolute datenums, or the number of days between
+				\addtocounter{assignmentdatenum}{-\thetodaysdatenum}%
+				%check if this gap is less than two.  this is an option not yet exposed to the caller of the package.  it should be, later
+				\ifnumcomp{\value{assignmentdatenum}}{<}{2}
+				{
+					%if so, highlight the assignment
+					\high{#1}\\
+					%and highlight and print the due date, in the format Tuesday, January 21, 2014
+					\hspace*{15pt}\high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
+				}
+				{
+					%if not, don't highlight the assignment or the due date, but print it the same
+					{#1}\\
+					\hspace*{15pt}\datedayname,~\datemonthname~{\thedateday},~\thedateyear\\
+				}
 		}
+	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdatetoday
 }
