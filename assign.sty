@@ -64,7 +64,7 @@
 \newcommand{\class}[1]{
 \@divisi
 \noindent\hspace*{15pt} \textbf{#1}\\
-\edef\currentclass{#1}
+\def\@currentclass{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day}
@@ -130,7 +130,7 @@
 					\hspace*{15pt}\datedayname,~\datemonthname~{\thedateday},~\thedateyear\\
 				}
 				%Adding entry to calendar using caltext
-				\caltext{\thedatemonth/\thedateday/\thedateyear}{\currentclass: #1} 
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdatetoday
