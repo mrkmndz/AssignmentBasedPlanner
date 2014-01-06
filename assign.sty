@@ -53,18 +53,14 @@
 \year=#2
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%full page line split
-\newcommand{\@divisi}{
-	\pagebreak[1]
-	\vskip\medskipamount 
-	\leaders\vrule width \textwidth\vskip0.4pt
-	\vskip\medskipamount
-	\nointerlineskip
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Bolded class title with divider line
 \newcommand{\class}[1]{
-\@ibp\expandafter{\the\@ibp{\@divisi
+\@ibp\expandafter{\the\@ibp{
+\pagebreak[1]
+\vskip\medskipamount 
+\leaders\vrule width \textwidth\vskip0.4pt
+\vskip\medskipamount
+\nointerlineskip
 \noindent\hspace*{15pt} \textbf{#1}\\}}
 \def\@currentclass{#1}
 }
