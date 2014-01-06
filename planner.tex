@@ -8,11 +8,6 @@
 \usepackage[highlight]{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setstablemonth{1}{2014}
-\newcommand{\id}{ExampleWeekID}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{document}
-{\centering\Large Week~\id\par\vspace{10pt plus 10 pt minus 10 pt}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \class{ExampleClass1}
 \class{ExampleClass2}
 	\assign{ExampleAssignment1}[12][3][2013]
@@ -24,7 +19,12 @@
 \class{ExampleClass4}
 	\assign{ExampleAssignment5 w/o date}
 	\assign{ExampleAssignment6 w/o date}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\id}{ExampleWeekID}
+\begin{document}
+{\centering\Large Week~\id\par\vspace{10pt plus 10 pt minus 10 pt}}
 \printplanner
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{landscape}
 \begin{center}
 \setlength{\calwidth}{\linewidth}
@@ -32,5 +32,5 @@
 \printcalendar{12/1/2013}{2}
 \end{center}
 \end{landscape}
-\printplanner
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
