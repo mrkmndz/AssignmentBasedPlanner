@@ -149,8 +149,6 @@
 	%Make setdate off of termcalsetdate
 	\expandafter\global\expandafter\let\csname setdate\expandafter\endcsname%
 	\csname termcalsetdate\endcsname
-	%All self respecting calendars are centered
-	\begin{center}
 		%start the calendar with the right date and weeks
 		\begin{calendar}{#1}{#2}
 			%all the days are important, but not numbered
@@ -162,7 +160,6 @@
 			\calday[Friday]{\noclassday}
 			\calday[Saturday]{\noclassday}
 		\end{calendar}
-	\end{center}
 	%Make calsetdate off of setdate
 	\expandafter\global\expandafter\let\csname calsetdate\expandafter\endcsname%
 	\csname setdate\endcsname
