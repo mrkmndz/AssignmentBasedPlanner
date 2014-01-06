@@ -2,12 +2,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%DEPENDENCIES%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%need in order to resolve conflict between termcal and datenumber
-\RequirePackage{savesym}
 %need to make calendar
 \RequirePackage{termcal}
-%turn termcal's \setdate into \origsetdate
-\savesymbol{setdate}
+%turn termcal's \setdate into \termcalsetdate (adapted from savesym package)
+\expandafter\let\csname termcalsetdate\expandafter\endcsname\csname setdate\endcsname
+%undefine setdate
+\expandafter\let\csname setdate\endcsname\relax
 %need for date manipulation
 \RequirePackage{datenumber}
 %need for making function with optional arguments work well
@@ -38,6 +38,7 @@
 \newcounter{@assignmentdatenum}
 \newcounter{@truemonth}
 \newcounter{@trueyear}
+\newtoks{\@ibp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,8 +63,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Bolded class title with divider line
 \newcommand{\class}[1]{
-\@divisi
-\noindent\hspace*{15pt} \textbf{#1}\\
+\@ibp\expandafter{\the\@ibp{\@divisi
+\noindent\hspace*{15pt} \textbf{#1}\\}}
 \def\@currentclass{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,8 +84,8 @@
 	}
 		{
 			%if so, just put the description and the question mark, never with highlighting
-			{#1}\\
-			\hspace*{15pt} ?\\
+			\def\@entry{{#1}\\
+			\hspace*{15pt} ?\\}
 		}
 		{
 			\ifboolexpr{
@@ -112,6 +113,7 @@
 						{\setdate{#4}{#2}{#3}}
 				}
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual entry
+			\def\@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
 				%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
 				\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
 				%find the difference between the two absolute datenums, or the number of days between
@@ -120,32 +122,38 @@
 				\ifnumcomp{\the@assignmentdatenum}{<}{2}
 				{
 					%if so, highlight the assignment
-					\@high{#1}\\
-					%and highlight and print the due date, in the format Tuesday, January 21, 2014
-					\hspace*{15pt}\@high{\hbox{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}}\\
+					\def\@entry{\@high{#1}\\
+					%and highlight and the due date, in the format Tuesday, January 21, 2014
+					\hspace*{15pt}\@high{\hbox{\@preentrytail}}\\}
 				}
 				{
 					%if not, don't highlight the assignment or the due date, but print it the same
-					{#1}\\
-					\hspace*{15pt}\datedayname,~\datemonthname~{\thedateday},~\thedateyear\\
+					\def\@entry{{#1}\\
+					\hspace*{15pt}\@preentrytail\\}
 				}
 				%Adding entry to calendar using caltext
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
+	\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@entry}
 	\setdatetoday
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand\printplanner{\the\@ibp}
 %The Calendar Command Syntax: \printcalendar{startdate mm/dd/yyyy}{no. of weeks}
 \newcommand\printcalendar[2]
 {
-	%Give termcal its command back
-	\restoresymbol{datenumber}{setdate}
+	%Make datenumbersetdate off of setdate
+	\expandafter\global\expandafter\let\csname datenumbersetdate\expandafter\endcsname%
+	\csname setdate\endcsname
+	%Make setdate off of termcalsetdate
+	\expandafter\global\expandafter\let\csname setdate\expandafter\endcsname%
+	\csname termcalsetdate\endcsname
 	%All self respecting calendars are centered
 	\begin{center}
 		%start the calendar with the right date and weeks
 		\begin{calendar}{#1}{#2}
-			%all the days are important
+			%all the days are important, but not numbered
 			\calday[Sunday]{\noclassday}
 			\calday[Monday]{\noclassday}
 			\calday[Tuesday]{\noclassday}
@@ -153,7 +161,12 @@
 			\calday[Thursday]{\noclassday}
 			\calday[Friday]{\noclassday}
 			\calday[Saturday]{\noclassday}
-			%while loop
 		\end{calendar}
 	\end{center}
+	%Make calsetdate off of setdate
+	\expandafter\global\expandafter\let\csname calsetdate\expandafter\endcsname%
+	\csname setdate\endcsname
+	%Make setdate off of datenumbersetdate
+	\expandafter\global\expandafter\let\csname setdate\expandafter\endcsname%
+	\csname datenumbersetdate\endcsname
 }

@@ -7,7 +7,7 @@
 \usepackage{pdflscape}
 \usepackage[highlight]{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\setstablemonth{12}{2013}
+\setstablemonth{1}{2014}
 \newcommand{\id}{ExampleWeekID}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -20,13 +20,15 @@
 	\assign{ExampleAssignment2}[3]
 	\assign{ExampleAssignment3}[12][4][2013]
 	\assign{ExampleAssignment3}[12][5][2013]
-	\assign{ExampleAssignment4}[5]
+	\assign{ExampleAssignment4}[9]
 \class{ExampleClass4}
 	\assign{ExampleAssignment5 w/o date}
 	\assign{ExampleAssignment6 w/o date}
+\printplanner
 \begin{landscape}
 \setlength{\calwidth}{\linewidth}
 %\setlength{\calboxdepth}{}
 \printcalendar{12/1/2013}{2}
 \end{landscape}
+\printplanner
 \end{document}
