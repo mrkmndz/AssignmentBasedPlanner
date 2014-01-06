@@ -38,6 +38,7 @@
 \newcounter{@assignmentdatenum}
 \newcounter{@truemonth}
 \newcounter{@trueyear}
+%making token register that will hold the entire item based planner
 \newtoks{\@ibp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
@@ -83,7 +84,7 @@
 		test {\IfNoValueTF{#4}}
 	}
 		{
-			%if so, just put the description and the question mark, never with highlighting
+			%if so, just put the description and the question mark into a command, never with highlighting
 			\def\@entry{{#1}\\
 			\hspace*{15pt} ?\\}
 		}
@@ -112,7 +113,7 @@
 						%if not, then all three optional arguments must have been given, so set the datenumber package date to specified year, specified month, specified day
 						{\setdate{#4}{#2}{#3}}
 				}
-			%for the instances that some optional argument, hence date, has been given, now we'll make the actual entry
+			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry into a command
 			\def\@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
 				%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
 				\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
@@ -121,24 +122,25 @@
 				%check if this gap is less than two.  this is an option not yet exposed to the caller of the package.  it should be, later
 				\ifnumcomp{\the@assignmentdatenum}{<}{2}
 				{
-					%if so, highlight the assignment
+					%if so, highlight the assignment, into another command
 					\def\@entry{\@high{#1}\\
-					%and highlight and the due date, in the format Tuesday, January 21, 2014
 					\hspace*{15pt}\@high{\hbox{\@preentrytail}}\\}
 				}
 				{
-					%if not, don't highlight the assignment or the due date, but print it the same
+					%if not, don't highlight the assignment or the due date, but put it into the entry command
 					\def\@entry{{#1}\\
 					\hspace*{15pt}\@preentrytail\\}
 				}
 				%Adding entry to calendar using caltext
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
 		}
-	%just so no other function is messed up, set the datenumber package date back to the stable date
+	%add entry to token register, expanded
 	\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@entry}
+	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdatetoday
 }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
+%command to actually print the item based planner.  No arguments
 \newcommand\printplanner{\the\@ibp}
 %The Calendar Command Syntax: \printcalendar{startdate mm/dd/yyyy}{no. of weeks}
 \newcommand\printcalendar[2]
@@ -149,17 +151,17 @@
 	%Make setdate off of termcalsetdate
 	\expandafter\global\expandafter\let\csname setdate\expandafter\endcsname%
 	\csname termcalsetdate\endcsname
-		%start the calendar with the right date and weeks
-		\begin{calendar}{#1}{#2}
-			%all the days are important, but not numbered
-			\calday[Sunday]{\noclassday}
-			\calday[Monday]{\noclassday}
-			\calday[Tuesday]{\noclassday}
-			\calday[Wednesday]{\noclassday}
-			\calday[Thursday]{\noclassday}
-			\calday[Friday]{\noclassday}
-			\calday[Saturday]{\noclassday}
-		\end{calendar}
+	%start the calendar with the right date and weeks
+	\begin{calendar}{#1}{#2}
+		%all the days are important, but not numbered
+		\calday[Sunday]{\noclassday}
+		\calday[Monday]{\noclassday}
+		\calday[Tuesday]{\noclassday}
+		\calday[Wednesday]{\noclassday}
+		\calday[Thursday]{\noclassday}
+		\calday[Friday]{\noclassday}
+		\calday[Saturday]{\noclassday}
+	\end{calendar}
 	%Make calsetdate off of setdate
 	\expandafter\global\expandafter\let\csname calsetdate\expandafter\endcsname%
 	\csname setdate\endcsname
