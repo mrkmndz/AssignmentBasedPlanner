@@ -25,8 +25,8 @@
 \newcommand{\@high}[1]{#1}
 %highlight option
 \DeclareOption{highlight}{
-%making the \@highcommand into a real highlighting command
-\renewcommand{\@high}[1]{\hl{#1}}
+	%making the \@highcommand into a real highlighting command
+	\renewcommand{\@high}[1]{\hl{#1}}
 }
 %process the options
 \ProcessOptions\relax
@@ -45,24 +45,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
 \newcommand{\setstablemonth}[2]{
-%save the month and year commands for later use
-\setcounter{@truemonth}{\month}
-\setcounter{@trueyear}{\year}
-%make the year stable
-\month=#1
-\year=#2
+	%save the month and year commands for later use
+	\setcounter{@truemonth}{\month}
+	\setcounter{@trueyear}{\year}
+	%make the year stable
+	\month=#1
+	\year=#2
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Bolded class title with divider line
+%Class command
 \newcommand{\class}[1]{
-\@ibp\expandafter{\the\@ibp{
-\pagebreak[1]
-\vskip\medskipamount 
-\leaders\vrule width \textwidth\vskip0.4pt
-\vskip\medskipamount
-\nointerlineskip
-\noindent\hspace*{15pt} \textbf{#1}\\}}
-\def\@currentclass{#1}
+	%add class header to token register
+	\@ibp\expandafter{\the\@ibp{
+	%low priority pagebreak
+	\pagebreak[1]
+	%make a page spanning line
+	\vskip\medskipamount 
+	\leaders\vrule width \textwidth\vskip0.4pt
+	\vskip\medskipamount
+	\nointerlineskip
+	%Indented and bolded class title
+	\noindent\hspace*{15pt} \textbf{#1}\\}}
+	%Make the current class accessible from other commands
+	\def\@currentclass{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day}
