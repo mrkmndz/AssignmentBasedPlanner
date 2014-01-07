@@ -38,6 +38,9 @@
 \newcounter{@assignmentdatenum}
 \newcounter{@truemonth}
 \newcounter{@trueyear}
+\newcounter{@stablemonth}
+\newcounter{@stableyear}
+\newcounter{@stableday}
 %making token register that will hold the entire item based planner
 \newtoks{\@ibp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,6 +52,9 @@
 	\setcounter{@truemonth}{\month}
 	\setcounter{@trueyear}{\year}
 	%make the year stable
+	\setcounter{@stablemonth}{#1}
+	\setcounter{@stableyear}{#2}
+	\setcounter{@stableday}{\day}
 	\month=#1
 	\year=#2
 }
@@ -73,9 +79,9 @@
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdatetoday
+	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 	%Set the todays datenum to the true datenum
-	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
+	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\the@stableday}%
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -99,7 +105,7 @@
 				test {\IfNoValueTF{#4}}
 			}
 				%if so, make a command setting the datenumber package date to stable year, stable month, specified day
-				{\def\internaldate{\setdate{\thedateyear}{\thedatemonth}{#2}}}
+				{\def\internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#2}}}
 				{
 					\ifboolexpr{
 						%Check if there are two optional values (month, day)
@@ -110,7 +116,7 @@
 						test {\IfNoValueTF{#4}}
 					}
 						%if so, make a command setting the datenumber package date to stable year, specified month, specified day
-						{\def\internaldate{\setdate{\thedateyear}{#2}{#3}}}
+						{\def\internaldate{\setdate{\the@stableyear}{#2}{#3}}}
 						%if not, then all three optional arguments must have been given, make a command setting the datenumber package date to specified year, specified month, specified day
 						{\def\internaldate{\setdate{#4}{#2}{#3}}}
 				}
@@ -141,7 +147,7 @@
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\setdatetoday
+	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 }
 %%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
 %command to actually print the item based planner.  No arguments
