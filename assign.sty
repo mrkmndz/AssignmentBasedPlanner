@@ -41,6 +41,8 @@
 \newcounter{@stablemonth}
 \newcounter{@stableyear}
 \newcounter{@stableday}
+\newcounter{hlthreshold}
+\setcounter{hlthreshold}{2}
 %making token register that will hold the entire item based planner
 \newtoks{\@ibp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,8 +136,8 @@
 				\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
 				%find the difference between the two absolute datenums, or the number of days between
 				\addtocounter{@assignmentdatenum}{-\the@todaysdatenum}%
-				%check if this gap is less than two.  this is an option not yet exposed to the caller of the package.  it should be, later
-				\ifnumcomp{\the@assignmentdatenum}{<}{2}
+				%check if this gap is less than the supplied threshold value or the default, 2
+				\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
 				{
 					%if so, highlight the assignment, and add it to token register
 					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
