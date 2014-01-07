@@ -47,6 +47,11 @@
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %to make the date assumptions stable in archive, \setstablemonth command
+	\setcounter{@truemonth}{\month}
+	\setcounter{@trueyear}{\year}
+	\setcounter{@stablemonth}{\month}
+	\setcounter{@stableyear}{\year}
+	\setcounter{@stableday}{\day}
 \newcommand{\setstablemonth}[2]{
 	%save the month and year commands for later use
 	\setcounter{@truemonth}{\month}
