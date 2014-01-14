@@ -73,12 +73,12 @@
 	%low priority pagebreak
 	\pagebreak[1]
 	%make a page spanning line
-	\vskip\medskipamount 
+	\vskip\bigskipamount 
 	\leaders\vrule width \textwidth\vskip0.4pt
 	\vskip\medskipamount
 	\nointerlineskip
 	%Indented and bolded class title
-	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[5pt]}}
+	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[10pt]}}
 	%Make the current class accessible from other commands
 	\def\@currentclass{#1}
 }
@@ -159,7 +159,7 @@
 }
 %%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
 %command to actually print the item based planner.  No arguments
-\newcommand\printplanner{\the\@ibp}
+\newcommand\printplanner{\raggedright\the\@ibp}
 %The Calendar Command Syntax: \printcalendar{startdate mm/dd/yyyy}{no. of weeks}
 \newcommand\printcalendar[2]
 {
