@@ -80,7 +80,10 @@
 	%Indented and bolded class title
 	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[10pt]}}
 	%Make the current class accessible from other commands
-	\def\@currentclass{#1}
+	\def\@currentclass{#1: }
+}
+\newcommand{\nullclass}{
+\def\@currentclass{}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %repeatedly used date setting function
@@ -157,7 +160,7 @@
 					\hspace*{15pt}\@preentrytail}\\}
 				}
 				%Adding entry to calendar using caltext
-				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
@@ -170,7 +173,7 @@
 	%set the date to the specified date
 	\@adaptivedate[#2][#3][#4]
 		%Adding entry to calendar using caltext
-		\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
+		\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1} 
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 }
