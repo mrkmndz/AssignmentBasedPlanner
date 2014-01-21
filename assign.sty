@@ -83,6 +83,36 @@
 	\def\@currentclass{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%repeatedly used date setting function
+\DeclareDocumentCommand \@adaptivedate { o o o}{ 
+	\ifboolexpr{
+		%Check if there is only one optional value (day)
+		not test {\IfNoValueTF{#1}}
+		and 
+		test {\IfNoValueTF{#2}}
+		and
+		test {\IfNoValueTF{#3}}
+	}
+		%if so, make a command setting the datenumber package date to stable year, stable month, specified day
+		{\def\internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#1}}}
+		{
+			\ifboolexpr{
+				%Check if there are two optional values (month, day)
+				not test {\IfNoValueTF{#1}}
+				and 
+				not test {\IfNoValueTF{#2}}
+				and
+				test {\IfNoValueTF{#3}}
+			}
+				%if so, make a command setting the datenumber package date to stable year, specified month, specified day
+				{\def\internaldate{\setdate{\the@stableyear}{#1}{#2}}}
+				%if not, then all three optional arguments must have been given, make a command setting the datenumber package date to specified year, specified month, specified day
+				{\def\internaldate{\setdate{#3}{#1}{#2}}}
+		}
+	%set the date to what it should be
+	\internaldate
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day} or \assign{description}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
@@ -102,34 +132,9 @@
 			\addtotoks{\@ibp}{\vspace{2pt}\parbox{\textwidth}{{#1}\\
 			\hspace*{15pt} ?}\\}
 		}
-		{
-			\ifboolexpr{
-				%Check if there is only one optional value (day)
-				not test {\IfNoValueTF{#2}}
-				and 
-				test {\IfNoValueTF{#3}}
-				and
-				test {\IfNoValueTF{#4}}
-			}
-				%if so, make a command setting the datenumber package date to stable year, stable month, specified day
-				{\def\internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#2}}}
-				{
-					\ifboolexpr{
-						%Check if there are two optional values (month, day)
-						not test {\IfNoValueTF{#2}}
-						and 
-						not test {\IfNoValueTF{#3}}
-						and
-						test {\IfNoValueTF{#4}}
-					}
-						%if so, make a command setting the datenumber package date to stable year, specified month, specified day
-						{\def\internaldate{\setdate{\the@stableyear}{#2}{#3}}}
-						%if not, then all three optional arguments must have been given, make a command setting the datenumber package date to specified year, specified month, specified day
-						{\def\internaldate{\setdate{#4}{#2}{#3}}}
-				}
+		{	%set the date to the specified date
+			\@adaptivedate[#2][#3][#4]
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
-			%set the date to what it should be
-			\internaldate
 			%don't repeat yourself, make the tail into a command
 			\def\@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
 				%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
@@ -157,40 +162,15 @@
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %secondary command of the package, adding an event to calendar, without showing in planner.  Syntax: \event{description}{month}{day}{year} or \event{description}{month}{day} or \event{description}{day}
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
-	%Set the todays datenum to the true datenum
-	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\the@stableday}%
-		\ifboolexpr{
-			%Check if there is only one optional value (day)
-			not test {\IfNoValueTF{#2}}
-			and 
-			test {\IfNoValueTF{#3}}
-			and
-			test {\IfNoValueTF{#4}}
-		}
-			%if so, make a command setting the datenumber package date to stable year, stable month, specified day
-			{\def\internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#2}}}
-			{
-				\ifboolexpr{
-					%Check if there are two optional values (month, day)
-					not test {\IfNoValueTF{#2}}
-					and 
-					not test {\IfNoValueTF{#3}}
-					and
-					test {\IfNoValueTF{#4}}
-				}
-					%if so, make a command setting the datenumber package date to stable year, specified month, specified day
-					{\def\internaldate{\setdate{\the@stableyear}{#2}{#3}}}
-					%if not, then all three optional arguments must have been given, make a command setting the datenumber package date to specified year, specified month, specified day
-					{\def\internaldate{\setdate{#4}{#2}{#3}}}
-			}
-		%set the date to what it should be
-		\internaldate
-			%Adding entry to calendar using caltext
-			\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
+	%set the date to the specified date
+	\@adaptivedate[#2][#3][#4]
+		%Adding entry to calendar using caltext
+		\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass: #1} 
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 }
