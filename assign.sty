@@ -170,12 +170,28 @@
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
-	%set the date to the specified date
-	\@adaptivedate[#2][#3][#4]
-		%Adding entry to calendar using caltext
-		\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1} 
-	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	\ifboolexpr{
+		%Check if there are none of the optional values (month, day, year)
+		test {\IfNoValueTF{#2}}
+		and 
+		test {\IfNoValueTF{#3}}
+		and
+		test {\IfNoValueTF{#4}}
+	}
+		{
+		%if so, just put the title and the question mark into the token register, never with highlighting
+			%if not, don't add a description
+			\addtotoks{\@ibp}{\vspace{2pt}\parbox{\textwidth}{{\textbf{#1}}\\
+			\hspace*{15pt} \textbf{?}}\\}
+		}
+		{
+		%set the date to the specified date
+			\@adaptivedate[#2][#3][#4]
+				%Adding entry to calendar using caltext
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\expandafter\textbf\expandafter{\@currentclass #1}} 
+			%just so no other function is messed up, set the datenumber package date back to the stable date
+			\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+		}
 }
 %%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
 %command to actually print the item based planner.  No arguments
