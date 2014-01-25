@@ -166,6 +166,99 @@
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareDocumentCommand \dassign { m m o o o}{ 
+	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
+	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	%Set the todays datenum to the true datenum
+	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\the@stableday}%
+	\ifboolexpr{
+		%Check if there are none of the optional values (month, day, year)
+		test {\IfNoValueTF{#3}}
+		and 
+		test {\IfNoValueTF{#4}}
+		and
+		test {\IfNoValueTF{#5}}
+	}
+		{
+		%if so, just put the title and the question mark into the token register, never with highlighting
+			\ifboolexpr{
+				%Check if there is a description
+				not test {\ifblank{#2}}
+			}
+			{
+			%if so, add description
+			\addtotoks{\@ibp}{\vspace{2pt}\parbox{\textwidth}{{#1:}\\
+			\hspace*{15pt}\emph{#2}\\
+			\hspace*{15pt} ?}\\}
+			}
+			{
+			%if not, don't add a description
+			\addtotoks{\@ibp}{\vspace{2pt}\parbox{\textwidth}{{#1}\\
+			\hspace*{15pt} ?}\\}
+			}
+			}
+		{	%set the date to the specified date
+			\@adaptivedate[#3][#4][#5]
+
+
+			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
+			%don't repeat yourself, make the tail into a command
+			\def\@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
+				%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
+				\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
+				%find the difference between the two absolute datenums, or the number of days between
+				\addtocounter{@assignmentdatenum}{-\the@todaysdatenum}%
+				%check if this gap is less than the supplied threshold value or the default, 2
+				\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
+				{
+					%if so, highlight the assignment, and add it to token register
+					\ifboolexpr{
+						%Check if there is a description
+						not test {\ifblank{#2}}
+					}
+					{
+					%if so, add description
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\vspace{2pt}\parbox{\textwidth}{
+					\@high{#1:}\\
+					\emph{\hspace*{15pt}\@high{#2}}\\
+					\hspace*{15pt}\@high{\mbox{\@preentrytail}}}\\}
+					}
+					{
+					%if not, don't add description
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\vspace{2pt}\parbox{\textwidth}{
+					\@high{#1}\\
+					\hspace*{15pt}\@high{\mbox{\@preentrytail}}}\\}
+					}
+				}
+				{
+					%if not, don't highlight the assignment or the due date, add it to token register
+					\ifboolexpr{
+						%Check if there is a description
+						not test {\ifblank{#2}}
+					}
+					{
+					%if so, add description
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\vspace{2pt}\parbox{\textwidth}{{#1:}\\
+					\hspace*{15pt}\emph{#2}\\
+					\hspace*{15pt}\@preentrytail}\\}
+					}
+					{
+					%if not, don't add description
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\vspace{2pt}\parbox{\textwidth}{{#1}\\
+					\hspace*{15pt}\@preentrytail}\\}
+					}
+				}
+				%Adding entry to calendar using caltext
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1} 
+		}
+	%just so no other function is messed up, set the datenumber package date back to the stable date
+	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %secondary command of the package, adding an event to calendar, without showing in planner.  Syntax: \event{description}{month}{day}{year} or \event{description}{month}{day} or \event{description}{day}
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
