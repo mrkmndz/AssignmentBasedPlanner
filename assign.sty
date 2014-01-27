@@ -40,7 +40,6 @@
 \newcounter{@trueyear}
 \newcounter{@stablemonth}
 \newcounter{@stableyear}
-\newcounter{@stableday}
 \newcounter{hlthreshold}
 \setcounter{hlthreshold}{2}
 %making token register that will hold the entire item based planner
@@ -53,11 +52,9 @@
 	\setcounter{@trueyear}{\year}
 	\setcounter{@stablemonth}{\month}
 	\setcounter{@stableyear}{\year}
-	\setcounter{@stableday}{\day}
 \newcommand{\setstablemonth}[2]{
 	\setcounter{@stablemonth}{#1}
 	\setcounter{@stableyear}{#2}
-	\setcounter{@stableday}{\day}
 	\month=#1
 	\year=#2
 }
@@ -120,9 +117,9 @@
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day} or \assign{description}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	\setdate{\the@stableyear}{\the@stablemonth}{\day}
 	%Set the todays datenum to the true datenum
-	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\the@stableday}%
+	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -164,14 +161,14 @@
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1\@linedivide{small}{small}} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	\setdate{\the@stableyear}{\the@stablemonth}{\day}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareDocumentCommand \dassign { m m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	\setdate{\the@stableyear}{\the@stablemonth}{\day}
 	%Set the todays datenum to the true datenum
-	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\the@stableday}%
+	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#3}}
@@ -257,13 +254,13 @@
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1\@linedivide{small}{small}} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	\setdate{\the@stableyear}{\the@stablemonth}{\day}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %secondary command of the package, adding an event to calendar, without showing in planner.  Syntax: \event{description}{month}{day}{year} or \event{description}{month}{day} or \event{description}{day}
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+	\setdate{\the@stableyear}{\the@stablemonth}{\day}
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -284,7 +281,7 @@
 				%Adding entry to calendar using caltext
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\expandafter\textbf\expandafter{\@currentclass #1\@linedivide{small}{small}}} 
 			%just so no other function is messed up, set the datenumber package date back to the stable date
-			\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
+			\setdate{\the@stableyear}{\the@stablemonth}{\day}
 		}
 }
 %%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
