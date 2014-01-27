@@ -66,6 +66,14 @@
 	\year=#2
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%line divider
+\newcommand{\@linedivide}[2]{
+	\vskip\csname #1skipamount\endcsname 
+	\leaders\vrule width \linewidth\vskip0.4pt
+	\vskip\csname #2skipamount\endcsname 
+	\nointerlineskip
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Class command
 \newcommand{\class}[1]{
 	%add class header to token register
@@ -73,10 +81,7 @@
 	%low priority pagebreak
 	\pagebreak[1]
 	%make a page spanning line
-	\vskip\bigskipamount 
-	\leaders\vrule width \textwidth\vskip0.4pt
-	\vskip\medskipamount
-	\nointerlineskip
+	\@linedivide{big}{med}
 	%Indented and bolded class title
 	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[10pt]}}
 	%Make the current class accessible from other commands
@@ -160,7 +165,7 @@
 					\hspace*{15pt}\@preentrytail}\\}
 				}
 				%Adding entry to calendar using caltext
-				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1} 
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1\@linedivide{small}{small}} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
@@ -253,7 +258,7 @@
 					}
 				}
 				%Adding entry to calendar using caltext
-				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1} 
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1\@linedivide{small}{small}} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
@@ -281,7 +286,7 @@
 		%set the date to the specified date
 			\@adaptivedate[#2][#3][#4]
 				%Adding entry to calendar using caltext
-				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\expandafter\textbf\expandafter{\@currentclass #1}} 
+				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\expandafter\textbf\expandafter{\@currentclass #1\@linedivide{small}{small}}} 
 			%just so no other function is messed up, set the datenumber package date back to the stable date
 			\setdate{\the@stableyear}{\the@stablemonth}{\the@stableday}
 		}
