@@ -7,18 +7,29 @@
 \usepackage{pdflscape}
 \usepackage[highlight]{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\setstablemonth{12}{2013}
-\class{ExampleClass1}
-\class{ExampleClass2}\nullclass
-	\event{ExampleAssignment4}[20]
-	\dassign{ExampleAssignment1}{describe}[1][3][2014]
-\class{ExampleClass3}
-	\assign{ExampleAssignment3}[9]
-	\assign{ExampleAssignment3}[28]
-	\assign{ExampleAssignment2}[9]
-\class{ExampleClass4}
-	\assign{ExampleAssignment5 w/o date}
-	\assign{ExampleAssignment6 w/o date}
+%\setstablemonth{1}{2014}
+\class{Class A}
+\class{Class B, nullclass}\nullclass
+	\event{Dated Event cB}[20]
+	\event{Undated Event cB}
+	\dassign{Assignment with Description and Date cB}{Description}[1][3][2014]
+	\dassign{Assignment with Description and without Date cB}{Description}
+	\assign{Assignment with Date cB}[1][17]
+	\assign{Assignment without Date cB}
+\class{Class C}
+	\event{Dated Event cC}[14]
+	\event{Undated Event cC}
+	\dassign{Assignment with Description and Date cC}{Description}[1][29][2014]
+	\dassign{Assignment with Description and without Date cC}{Description}
+	\assign{Assignment with Date cC}[1][2]
+	\assign{Assignment without Date cC}
+\class{Class D}
+	\event{Dated Event cD}[30]
+	\event{Undated Event cD}
+	\dassign{Assignment with Description and Date cD}{Description}[2][9][2014]
+	\dassign{Assignment with Description and without Date cD}{Description}
+	\assign{Assignment with Date cD}[3][18]
+	\assign{Assignment without Date cD}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\id}{ExampleWeekID}
 \begin{document}
@@ -29,7 +40,7 @@
 \begin{center}
 \setlength{\calwidth}{\linewidth}
 %\setlength{\calboxdepth}{}
-\printcalendar{1/1/2014}{4}
+\printcalendar{1/1/2014}{8}
 \end{center}
 \end{landscape}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
