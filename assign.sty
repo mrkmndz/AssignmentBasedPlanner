@@ -125,9 +125,13 @@
 \newcommand{\@addtocalendar}[1]{
 \expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{#1}
 }
+%add a string of tokens #2 to a token register #1
+\newcommand\@appendtotokenreg[2]{
+#1\expandafter{\the#1#2}
+}
 %adds tokens to planner, expanding first token
 \newcommand{\@addtoplanner}[1]{
-\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
+\expandafter\@appendtotokenreg\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day} or \assign{description}
