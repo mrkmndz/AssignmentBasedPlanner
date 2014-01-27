@@ -50,6 +50,8 @@
 %to make the date assumptions stable in archive, \setstablemonth command
 	\setcounter{@truemonth}{\month}
 	\setcounter{@trueyear}{\year}
+	%Set the todays datenum to the true datenum
+	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
 	\setcounter{@stablemonth}{\month}
 	\setcounter{@stableyear}{\year}
 \newcommand{\setstablemonth}[2]{
@@ -57,6 +59,9 @@
 	\setcounter{@stableyear}{#2}
 	\month=#1
 	\year=#2
+}
+\newcommand{\@makedatestabledate}{
+\setdate{\the@stableyear}{\the@stablemonth}{\day}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %line divider
@@ -95,7 +100,7 @@
 		test {\IfNoValueTF{#3}}
 	}
 		%if so, make a command setting the datenumber package date to stable year, stable month, specified day
-		{\def\internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#1}}}
+		{\def\@internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#1}}}
 		{
 			\ifboolexpr{
 				%Check if there are two optional values (month, day)
@@ -106,20 +111,18 @@
 				test {\IfNoValueTF{#3}}
 			}
 				%if so, make a command setting the datenumber package date to stable year, specified month, specified day
-				{\def\internaldate{\setdate{\the@stableyear}{#1}{#2}}}
+				{\def\@internaldate{\setdate{\the@stableyear}{#1}{#2}}}
 				%if not, then all three optional arguments must have been given, make a command setting the datenumber package date to specified year, specified month, specified day
-				{\def\internaldate{\setdate{#3}{#1}{#2}}}
+				{\def\@internaldate{\setdate{#3}{#1}{#2}}}
 		}
 	%set the date to what it should be
-	\internaldate
+	\@internaldate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %main command of the package, adding an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day} or \assign{description}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdate{\the@stableyear}{\the@stablemonth}{\day}
-	%Set the todays datenum to the true datenum
-	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
+	\@makedatestabledate
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -146,14 +149,14 @@
 				\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
 				{
 					%if so, highlight the assignment, and add it to token register
-					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@internaldate
 					\vspace{2pt}\parbox{\textwidth}{
 					\@high{#1}\\
 					\hspace*{15pt}\@high{\mbox{\@preentrytail}}}\\}
 				}
 				{
 					%if not, don't highlight the assignment or the due date, add it to token register
-					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@internaldate
 					\vspace{2pt}\parbox{\textwidth}{{#1}\\
 					\hspace*{15pt}\@preentrytail}\\}
 				}
@@ -161,14 +164,14 @@
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1\@linedivide{small}{small}} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\setdate{\the@stableyear}{\the@stablemonth}{\day}
+	\@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareDocumentCommand \dassign { m m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdate{\the@stableyear}{\the@stablemonth}{\day}
-	%Set the todays datenum to the true datenum
-	\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
+	\@makedatestabledate
+	
+	
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#3}}
@@ -216,7 +219,7 @@
 					}
 					{
 					%if so, add description
-					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@internaldate
 					\vspace{2pt}\parbox{\textwidth}{
 					\@high{#1:}\\
 					\emph{\hspace*{15pt}\@high{#2}}\\
@@ -224,7 +227,7 @@
 					}
 					{
 					%if not, don't add description
-					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@internaldate
 					\vspace{2pt}\parbox{\textwidth}{
 					\@high{#1}\\
 					\hspace*{15pt}\@high{\mbox{\@preentrytail}}}\\}
@@ -238,14 +241,14 @@
 					}
 					{
 					%if so, add description
-					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@internaldate
 					\vspace{2pt}\parbox{\textwidth}{{#1:}\\
 					\hspace*{15pt}\emph{#2}\\
 					\hspace*{15pt}\@preentrytail}\\}
 					}
 					{
 					%if not, don't add description
-					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\internaldate
+					\expandafter\addtotoks\expandafter{\expandafter\@ibp\expandafter}\expandafter{\@internaldate
 					\vspace{2pt}\parbox{\textwidth}{{#1}\\
 					\hspace*{15pt}\@preentrytail}\\}
 					}
@@ -254,13 +257,13 @@
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\@currentclass #1\@linedivide{small}{small}} 
 		}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\setdate{\the@stableyear}{\the@stablemonth}{\day}
+	\@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %secondary command of the package, adding an event to calendar, without showing in planner.  Syntax: \event{description}{month}{day}{year} or \event{description}{month}{day} or \event{description}{day}
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\setdate{\the@stableyear}{\the@stablemonth}{\day}
+	\@makedatestabledate
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -281,7 +284,7 @@
 				%Adding entry to calendar using caltext
 				\expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{\expandafter\textbf\expandafter{\@currentclass #1\@linedivide{small}{small}}} 
 			%just so no other function is messed up, set the datenumber package date back to the stable date
-			\setdate{\the@stableyear}{\the@stablemonth}{\day}
+			\@makedatestabledate
 		}
 }
 %%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
