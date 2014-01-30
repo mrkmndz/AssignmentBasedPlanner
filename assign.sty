@@ -35,25 +35,47 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%making counters we'll need later
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%INTERNAL%%%%%%%%%%%%%%%%%%%%%
+%for subtracting
 \newcounter{@assignmentdatenum}
+%reference, for subtracting
 \newcounter{@truemonth}
+%reference value
 \setcounter{@truemonth}{\month}
+%reference, for subtracting
 \newcounter{@trueyear}
+%reference value
 \setcounter{@trueyear}{\year}
+%accessible through setstablemonth
 \newcounter{@stablemonth}
+%initial value
 \setcounter{@stablemonth}{\month}
+%accessible through setstablemonth
 \newcounter{@stableyear}
+%initial value
 \setcounter{@stableyear}{\year}
+%value to subtract @assignmentdatenum against
 \newcounter{@todaysdatenum}
+%actual perpetual value
 \setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
+%%%%%%%%%%%%%EXTERNAL%%%%%%%%%%%%%%%%%%%%%
+%number of days between now and an assignment for it to be highlighted
 \newcounter{hlthreshold}
+%default value
 \setcounter{hlthreshold}{2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%REGISTERS%%%%%%%%%%%%%%%%%%%%
 %making token register that will hold the entire item based planner
 \newtoks{\@ibp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%for archival purposes, allow a planner to evaluate like its a month it isn't.
+%syntax: \setstablemonth{month}{year}
 \newcommand{\setstablemonth}[2]{
 	\setcounter{@stablemonth}{#1}
 	\setcounter{@stableyear}{#2}
@@ -61,11 +83,12 @@
 	\year=#2
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%internal command to reset the datenumber date to the "stable" date
 \newcommand{\@makedatestabledate}{
 	\setdate{\the@stableyear}{\the@stablemonth}{\day}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%line divider
+%internal line divider command
 \newcommand{\@linedivide}[2]{
 	\vskip\csname #1skipamount\endcsname 
 	\leaders\vrule width \linewidth\vskip0.4pt
@@ -73,7 +96,8 @@
 	\nointerlineskip
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Class command
+%command to make a new class (or group) on the planner, and tags for the calendar.
+%syntax: \class{title}
 \newcommand{\class}[1]{
 	%add class header to token register
 	\@ibp\expandafter{\the\@ibp{
@@ -122,7 +146,7 @@
 	\@internaldate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%don't repeat yourself, make the tail into a command
+%Quick command for the standard format of expressing a due date
 \def\@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,7 +168,7 @@
 \expandafter\@appendtotokenreg\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%main command to add an assignment.  Syntax: \assign{description}{month}{day}{year} or \assign{description}{month}{day} or \assign{description}{day} or \assign{description}
+%command to add an assignment.  Syntax: \assign{title}{month}{day}{year} or \assign{title}{month}{day} or \assign{title}{day} or \assign{title}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\@makedatestabledate
@@ -204,6 +228,8 @@
 	\@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%command to make an assignment with an italicized description that isn't printed on the calendar
+%syntax: \assign{title}{description}{month}{day}{year} or \assign{title}{description}{month}{day} or \assign{title}{description}{day} or \assign{title}{description}
 \DeclareDocumentCommand \dassign { m m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\@makedatestabledate
@@ -262,7 +288,8 @@
 	\@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%secondary command of the package, adding an event to calendar, without showing in planner.  Syntax: \event{description}{month}{day}{year} or \event{description}{month}{day} or \event{description}{day}
+%command to add an event to calendar, without showing in planner.  
+%Syntax: \event{title}{month}{day}{year} or \event{title}{month}{day} or \event{title}{day} or \event{title}
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
 	\@makedatestabledate
