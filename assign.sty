@@ -74,15 +74,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%for archival purposes, allow a planner to evaluate like its a month it isn't.
-%syntax: \setstablemonth{month}{year}
-\newcommand{\setstablemonth}[2]{
-	\setcounter{@stablemonth}{#1}
-	\setcounter{@stableyear}{#2}
-	\month=#1
-	\year=#2
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%INTERNAL%%%%%%%%%%%%%%%%%%%%
 %internal command to reset the datenumber date to the "stable" date
 \newcommand{\@makedatestabledate}{
 	\setdate{\the@stableyear}{\the@stablemonth}{\day}
@@ -94,26 +87,6 @@
 	\leaders\vrule width \linewidth\vskip0.4pt
 	\vskip\csname #2skipamount\endcsname 
 	\nointerlineskip
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%command to make a new class (or group) on the planner, and tags for the calendar.
-%syntax: \class{title}
-\newcommand{\class}[1]{
-	%add class header to token register
-	\@ibp\expandafter{\the\@ibp{
-	%low priority pagebreak
-	\pagebreak[1]
-	%make a page spanning line
-	\@linedivide{big}{med}
-	%Indented and bolded class title
-	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[10pt]}}
-	%Make the current class accessible from other commands
-	\def\@currentclass{#1: }
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%command to unset the currentclass command, to make assignments without classes on calendar
-\newcommand{\nullclass}{
-\def\@currentclass{}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %repeatedly used date setting function
@@ -166,6 +139,38 @@
 %adds tokens to planner, expanding first token
 \newcommand{\@addtoplanner}[1]{
 \expandafter\@appendtotokenreg\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%EXTERNAL%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%for archival purposes, allow a planner to evaluate like its a month it isn't.
+%syntax: \setstablemonth{month}{year}
+\newcommand{\setstablemonth}[2]{
+	\setcounter{@stablemonth}{#1}
+	\setcounter{@stableyear}{#2}
+	\month=#1
+	\year=#2
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%command to make a new class (or group) on the planner, and tags for the calendar.
+%syntax: \class{title}
+\newcommand{\class}[1]{
+	%add class header to token register
+	\@ibp\expandafter{\the\@ibp{
+	%low priority pagebreak
+	\pagebreak[1]
+	%make a page spanning line
+	\@linedivide{big}{med}
+	%Indented and bolded class title
+	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[10pt]}}
+	%Make the current class accessible from other commands
+	\def\@currentclass{#1: }
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%command to unset the currentclass command, to make assignments without classes on calendar
+\newcommand{\nullclass}{
+\def\@currentclass{}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to add an assignment.  Syntax: \assign{title}{month}{day}{year} or \assign{title}{month}{day} or \assign{title}{day} or \assign{title}
@@ -316,7 +321,11 @@
 			\@makedatestabledate
 		}
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%DISPLAY%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to actually print the item based planner.  No arguments
 \newcommand\printplanner{\raggedright\the\@ibp}
 %The Calendar Command Syntax: \printcalendar{startdate mm/dd/yyyy}{no. of weeks}
