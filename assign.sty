@@ -359,9 +359,10 @@
 			\@adaptivedate[#2][#3][#4]
 				%Adding entry to calendar using @addtocalendar
 				\@addtocalendar{\expandafter\textbf\expandafter{\@currentclass #1\@linedivide{small}{small}}} 
-			%just so no other function is messed up, set the datenumber package date back to the stable date
-			\@makedatestabledate
 		}
+	\donefalse
+	%just so no other function is messed up, set the datenumber package date back to the stable date
+	\@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
