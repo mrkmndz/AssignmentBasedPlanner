@@ -1,5 +1,22 @@
 \ProvidesPackage{assign}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%OPTIONS%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%highlight option
+\newif\if@highlight
+\@highlightfalse
+\DeclareOption{highlight}{
+	\@highlighttrue
+}
+%completion boxes option
+\newif\if@boxey
+\@boxeyfalse
+\DeclareOption{boxes}{
+	\@boxeytrue
+}
+%process the options
+\ProcessOptions\relax
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%DEPENDENCIES%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %need to make calendar
@@ -14,31 +31,17 @@
 \RequirePackage{xparse}
 %need for various programming things
 \RequirePackage{etoolbox}
-%need for coloring the highlighting
-\RequirePackage{color}
-%need for highlighting
-\RequirePackage{soul}
 %need for processing lengths
 \RequirePackage{calc}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%OPTIONS%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%if no highlight option, make the highlight command into a dummy command that just passes back the argument
-\newcommand{\@high}[1]{#1}
-%highlight option
-\DeclareOption{highlight}{
-	%making the \@highcommand into a real highlighting command
-	\renewcommand{\@high}[1]{\hl{#1}}
-}
-\newif\ifboxey
-\boxeyfalse
-\DeclareOption{boxes}{
-	\boxeytrue
-}
-%process the options
-\ProcessOptions\relax
-\ifboxey
-\RequirePackage{wasysym}
+\if@highlight
+	%need for coloring the highlighting
+	\RequirePackage{color}
+	%need for highlighting
+	\RequirePackage{soul}
+\fi
+\if@boxey
+	%need for making squares and checked squares for completion boxes
+	\RequirePackage{wasysym}
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
@@ -86,6 +89,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %%%%%%%%%%%%%%INTERNAL%%%%%%%%%%%%%%%%%%%%
+%internal highlighting command
+\if@highlight
+	%making the \@highcommand into a real highlighting command
+	\newcommand{\@high}[1]{\hl{#1}}
+\else
+	%if no highlight option, make the highlight command into a dummy command that just passes back the argument
+	\newcommand{\@high}[1]{#1}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %internal command to reset the datenumber date to the "stable" date
 \newcommand{\@makedatestabledate}{
 	\setdate{\the@stableyear}{\the@stablemonth}{\day}
@@ -100,7 +112,7 @@
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\@status}{
-\ifboxey
+\if@boxey
 	\ifdone
 	{\Huge\CheckedBox}
 	\else
@@ -166,7 +178,7 @@
 }
 %adds tokens to planner in a parbox without expanding
 \newlength\@statusspace
-\ifboxey
+\if@boxey
 \newcommand{\@boxtoplanner}[1]{
 	\@addtoplanner{\relax
 		\parbox{\linewidth-3em}{#1}
