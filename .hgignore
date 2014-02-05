@@ -1,3 +1,4 @@
 syntax: glob
 *.pdf
 *.synctex.gz
+compare.cmd
