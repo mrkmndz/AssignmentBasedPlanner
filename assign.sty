@@ -3,16 +3,16 @@
 %%%%%%%%%%%%%%OPTIONS%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %highlight option
-\newif\if@highlight
-\@highlightfalse
+\newif\ifassign@highlight
+\assign@highlightfalse
 \DeclareOption{highlight}{
-	\@highlighttrue
+	\assign@highlighttrue
 }
 %completion boxes option
-\newif\if@boxey
-\@boxeyfalse
+\newif\ifassign@boxey
+\assign@boxeyfalse
 \DeclareOption{boxes}{
-	\@boxeytrue
+	\assign@boxeytrue
 }
 %process the options
 \ProcessOptions\relax
@@ -33,13 +33,13 @@
 \RequirePackage{etoolbox}
 %need for processing lengths
 \RequirePackage{calc}
-\if@highlight
+\ifassign@highlight
 	%need for coloring the highlighting
 	\RequirePackage{color}
 	%need for highlighting
 	\RequirePackage{soul}
 \fi
-\if@boxey
+\ifassign@boxey
 	%need for making squares and checked squares for completion boxes
 	\RequirePackage{wasysym}
 \fi
@@ -47,34 +47,34 @@
 %%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\newif\if@done
-\@donefalse
+\newif\ifassign@done
+\assign@donefalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%%
 %
 %%%%%%%%%%%%%INTERNAL%%%%%%%%%%%%%%%%%%%%%
 %for subtracting
-\newcounter{@assignmentdatenum}
+\newcounter{assign@assignmentdatenum}
 %reference, for subtracting
-\newcounter{@truemonth}
+\newcounter{assign@truemonth}
 %reference value
-\setcounter{@truemonth}{\month}
+\setcounter{assign@truemonth}{\month}
 %reference, for subtracting
-\newcounter{@trueyear}
+\newcounter{assign@trueyear}
 %reference value
-\setcounter{@trueyear}{\year}
+\setcounter{assign@trueyear}{\year}
 %accessible through setstablemonth
-\newcounter{@stablemonth}
+\newcounter{assign@stablemonth}
 %initial value
-\setcounter{@stablemonth}{\month}
+\setcounter{assign@stablemonth}{\month}
 %accessible through setstablemonth
-\newcounter{@stableyear}
+\newcounter{assign@stableyear}
 %initial value
-\setcounter{@stableyear}{\year}
-%value to subtract @assignmentdatenum against
-\newcounter{@todaysdatenum}
+\setcounter{assign@stableyear}{\year}
+%value to subtract assign@assignmentdatenum against
+\newcounter{assign@todaysdatenum}
 %actual perpetual value
-\setmydatenumber{@todaysdatenum}{\the@trueyear}{\the@truemonth}{\day}%
+\setmydatenumber{assign@todaysdatenum}{\theassign@trueyear}{\theassign@truemonth}{\day}%
 %%%%%%%%%%%%%EXTERNAL%%%%%%%%%%%%%%%%%%%%%
 %number of days between now and an assignment for it to be highlighted
 \newcounter{hlthreshold}
@@ -83,50 +83,50 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%REGISTERS%%%%%%%%%%%%%%%%%%%%
 %making token register that will hold the entire item based planner
-\newtoks{\@ibp}
+\newtoks{\assign@ibp}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%FUNCTIONS%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %%%%%%%%%%%%%%INTERNAL%%%%%%%%%%%%%%%%%%%%
 %internal highlighting command
-\if@highlight
-	%making the \@highcommand into a real highlighting command
-	\newcommand{\@high}[1]{\hl{#1}}
+\ifassign@highlight
+	%making the \assign@highcommand into a real highlighting command
+	\newcommand{\assign@high}[1]{\hl{#1}}
 \else
 	%if no highlight option, make the highlight command into a dummy command that just passes back the argument
-	\newcommand{\@high}[1]{#1}
+	\newcommand{\assign@high}[1]{#1}
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %internal command to reset the datenumber date to the "stable" date
-\newcommand{\@makedatestabledate}{
-	\setdate{\the@stableyear}{\the@stablemonth}{\day}
+\newcommand{\assign@makedatestabledate}{
+	\setdate{\theassign@stableyear}{\theassign@stablemonth}{\day}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %internal line divider command
-\newcommand{\@linedivide}[2]{
+\newcommand{\assign@linedivide}[2]{
 	\vskip\csname #1skipamount\endcsname 
 	\leaders\vrule width \linewidth\vskip0.4pt
 	\vskip\csname #2skipamount\endcsname 
 	\nointerlineskip
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\@status}{
-\if@boxey
-	\if@done
+\newcommand{\assign@status}{
+\ifassign@boxey
+	\ifassign@done
 	{\Huge\CheckedBox}
 	\else
 	{\Huge\Square}
 	\fi
 \else
 \fi
-\@donefalse}
+\assign@donefalse}
 \newcommand{\done}{
-\@addtoplanner{\relax\@donetrue}
+\assign@addtoplanner{\relax\assign@donetrue}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %repeatedly used date setting function
-\DeclareDocumentCommand \@adaptivedate { o o o}{ 
+\DeclareDocumentCommand \assign@adaptivedate { o o o}{ 
 	\ifboolexpr{
 		%Check if there is only one optional value (day)
 		not test {\IfNoValueTF{#1}}
@@ -136,7 +136,7 @@
 		test {\IfNoValueTF{#3}}
 	}
 		%if so, make a command setting the datenumber package date to stable year, stable month, specified day
-		{\def\@internaldate{\setdate{\the@stableyear}{\the@stablemonth}{#1}}}
+		{\def\assign@internaldate{\setdate{\theassign@stableyear}{\theassign@stablemonth}{#1}}}
 		{
 			\ifboolexpr{
 				%Check if there are two optional values (month, day)
@@ -147,46 +147,46 @@
 				test {\IfNoValueTF{#3}}
 			}
 				%if so, make a command setting the datenumber package date to stable year, specified month, specified day
-				{\def\@internaldate{\setdate{\the@stableyear}{#1}{#2}}}
+				{\def\assign@internaldate{\setdate{\theassign@stableyear}{#1}{#2}}}
 				%if not, then all three optional arguments must have been given, make a command setting the datenumber package date to specified year, specified month, specified day
-				{\def\@internaldate{\setdate{#3}{#1}{#2}}}
+				{\def\assign@internaldate{\setdate{#3}{#1}{#2}}}
 		}
 	%set the date to what it should be
-	\@internaldate
+	\assign@internaldate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Quick command for the standard format of expressing a due date
-\def\@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
+\def\assign@preentrytail{\datedayname,~\datemonthname~{\thedateday},~\thedateyear}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Builder functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %adds tokens to calendar, expanding first token
-\newcommand{\@addtocalendar}[1]{
+\newcommand{\assign@addtocalendar}[1]{
 \expandafter\caltext\expandafter{\expandafter\thedatemonth\expandafter/\expandafter\thedateday\expandafter/\expandafter\thedateyear\expandafter}\expandafter{#1}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %add a string of tokens #2 to a token register #1
-\newcommand\@appendtotokenreg[2]{
+\newcommand\assign@appendtotokenreg[2]{
 #1\expandafter{\the#1#2}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %adds tokens to planner, expanding first token
-\newcommand{\@addtoplanner}[1]{
-\expandafter\@appendtotokenreg\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
+\newcommand{\assign@addtoplanner}[1]{
+\expandafter\assign@appendtotokenreg\expandafter{\expandafter\assign@ibp\expandafter}\expandafter{#1}
 }
 %adds tokens to planner in a parbox without expanding
-\newlength\@statusspace
-\if@boxey
-\newcommand{\@boxtoplanner}[1]{
-	\@addtoplanner{\relax
+\newlength\assign@statusspace
+\ifassign@boxey
+\newcommand{\assign@boxtoplanner}[1]{
+	\assign@addtoplanner{\relax
 		\parbox{\linewidth-3em}{#1}
 	}
 }
 \else
-\newcommand{\@boxtoplanner}[1]{
-	\@addtoplanner{\relax
+\newcommand{\assign@boxtoplanner}[1]{
+	\assign@addtoplanner{\relax
 		\parbox{\linewidth}{#1}
 	}
 }
@@ -197,8 +197,8 @@
 %for archival purposes, allow a planner to evaluate like its a month it isn't.
 %syntax: \setstablemonth{month}{year}
 \newcommand{\setstablemonth}[2]{
-	\setcounter{@stablemonth}{#1}
-	\setcounter{@stableyear}{#2}
+	\setcounter{assign@stablemonth}{#1}
+	\setcounter{assign@stableyear}{#2}
 	\month=#1
 	\year=#2
 }
@@ -207,28 +207,28 @@
 %syntax: \class{title}
 \newcommand{\class}[1]{
 	%add class header to token register
-	\@ibp\expandafter{\the\@ibp{
+	\assign@ibp\expandafter{\the\assign@ibp{
 	%low priority pagebreak
 	\pagebreak[1]
 	%make a page spanning line
-	\@linedivide{big}{med}
+	\assign@linedivide{big}{med}
 	%Indented and bolded class title
 	\noindent\hspace*{15pt} \textbf{\uppercase{#1}}\\[10pt]}}
 	%Make the current class accessible from other commands
-	\def\@currentclass{#1: }
+	\def\assign@currentclass{#1: }
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to unset the currentclass command, to make assignments without classes on calendar
 \newcommand{\nullclass}{
-\def\@currentclass{}
+\def\assign@currentclass{}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to add an assignment.  Syntax: \assign{title}{month}{day}{year} or \assign{title}{month}{day} or \assign{title}{day} or \assign{title}
 \DeclareDocumentCommand \assign { m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\@makedatestabledate
+	\assign@makedatestabledate
 	%every type of entry requires some vertical space
-	\@addtoplanner{\relax\vspace{2pt}}
+	\assign@addtoplanner{\relax\vspace{2pt}}
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -239,7 +239,7 @@
 	}
 		{
 			%if so, just put the description and the question mark into the token register, never with highlighting
-			\@boxtoplanner{	
+			\assign@boxtoplanner{	
 				{#1}\\
 				\hspace*{15pt} ?
 			}
@@ -247,44 +247,44 @@
 		{
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
 			%add the date you know to the register, expanded, but not executed
-			\@addtoplanner{\@adaptivedate[#2][#3][#4]}				
+			\assign@addtoplanner{\assign@adaptivedate[#2][#3][#4]}				
 			%set the date to the specified date
-			\@adaptivedate[#2][#3][#4]
-			%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
-			\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
+			\assign@adaptivedate[#2][#3][#4]
+			%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
+			\setmydatenumber{assign@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
 			%find the difference between the two absolute datenums, or the number of days between
-			\addtocounter{@assignmentdatenum}{-\the@todaysdatenum}%
+			\addtocounter{assign@assignmentdatenum}{-\theassign@todaysdatenum}%
 			%check if this gap is less than the supplied threshold value or the default, 2
-			\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
+			\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold}
 			{
 				%if so, highlight the assignment, and add it to token register
-				\@boxtoplanner{
-				\@high{#1}\\
-				\hspace*{15pt}\@high{\mbox{\@preentrytail}}
+				\assign@boxtoplanner{
+				\assign@high{#1}\\
+				\hspace*{15pt}\assign@high{\mbox{\assign@preentrytail}}
 				}
 			}
 			{
 				%if not, don't highlight the assignment or the due date, add it to token register
-				\@boxtoplanner{
+				\assign@boxtoplanner{
 				{#1}\\
-				\hspace*{15pt}\@preentrytail
+				\hspace*{15pt}\assign@preentrytail
 				}
 			}
-			%Adding entry to calendar using @addtocalendar
-			\@addtocalendar{\@currentclass #1\@linedivide{small}{small}} 
+			%Adding entry to calendar using assign@addtocalendar
+			\assign@addtocalendar{\assign@currentclass #1\assign@linedivide{small}{small}} 
 		}
-	\@addtoplanner{\relax\@status\\}
+	\assign@addtoplanner{\relax\assign@status\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\@makedatestabledate
+	\assign@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to make an assignment with an italicized description that isn't printed on the calendar
 %syntax: \assign{title}{description}{month}{day}{year} or \assign{title}{description}{month}{day} or \assign{title}{description}{day} or \assign{title}{description}
 \DeclareDocumentCommand \dassign { m m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\@makedatestabledate
+	\assign@makedatestabledate
 	%every type of entry requires some vertical space
-	\@addtoplanner{\relax\vspace{2pt}}
+	\assign@addtoplanner{\relax\vspace{2pt}}
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#3}}
@@ -295,51 +295,51 @@
 	}
 		{
 		%if so, just put the title, description and the question mark into the token register, never with highlighting
-			\@boxtoplanner{{#1:}\\
+			\assign@boxtoplanner{{#1:}\\
 			\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{#2}}\\
 			\hspace*{15pt} ?}
 		}
 		{	
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
 			%add the date you know to the register, expanded, but not executed
-			\@addtoplanner{\@adaptivedate[#3][#4][#5]}
+			\assign@addtoplanner{\assign@adaptivedate[#3][#4][#5]}
 			%set the date to the specified date
-			\@adaptivedate[#3][#4][#5]	
-			%set the @assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
-			\setmydatenumber{@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
+			\assign@adaptivedate[#3][#4][#5]	
+			%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
+			\setmydatenumber{assign@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
 			%find the difference between the two absolute datenums, or the number of days between
-			\addtocounter{@assignmentdatenum}{-\the@todaysdatenum}%
+			\addtocounter{assign@assignmentdatenum}{-\theassign@todaysdatenum}%
 			%check if this gap is less than the supplied threshold value or the default, 2
-			\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
+			\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold}
 			{
 			%if so, highlight the assignment with description, and add it to token register
-				\@boxtoplanner{
-						\@high{#1:}\\
-						\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{\@high{#2}}}\\
-						\hspace*{15pt}\@high{\mbox{\@preentrytail}}
+				\assign@boxtoplanner{
+						\assign@high{#1:}\\
+						\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{\assign@high{#2}}}\\
+						\hspace*{15pt}\assign@high{\mbox{\assign@preentrytail}}
 				}
 			}
 			{
 			%if not, don't highlight the assignment, description or the due date, add it to token register
-				\@boxtoplanner{
+				\assign@boxtoplanner{
 						{#1:}\\
 						\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{#2}}\\
-						\hspace*{15pt}\@preentrytail
+						\hspace*{15pt}\assign@preentrytail
 				}
 			}
-			%Adding entry to calendar using @addtocalendar
-			\@addtocalendar{\@currentclass #1\@linedivide{small}{small}} 
+			%Adding entry to calendar using assign@addtocalendar
+			\assign@addtocalendar{\assign@currentclass #1\assign@linedivide{small}{small}} 
 		}
-		\@addtoplanner{\relax\@status\\}
+		\assign@addtoplanner{\relax\assign@status\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\@makedatestabledate
+	\assign@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to add an event to calendar, without showing in planner.  
 %Syntax: \event{title}{month}{day}{year} or \event{title}{month}{day} or \event{title}{day} or \event{title}
 \DeclareDocumentCommand \event{ m o o o}{ 
 	%within an evaluation, start with the date, as established either by truth or by \setstablemonth
-	\@makedatestabledate
+	\assign@makedatestabledate
 	\ifboolexpr{
 		%Check if there are none of the optional values (month, day, year)
 		test {\IfNoValueTF{#2}}
@@ -351,18 +351,18 @@
 		{
 		%if so, just put the title and the question mark into the token register, never with highlighting
 			%if not, don't add a description
-			\@addtoplanner{\relax\vspace{2pt}\parbox{\linewidth}{{\textbf{#1}}\\
+			\assign@addtoplanner{\relax\vspace{2pt}\parbox{\linewidth}{{\textbf{#1}}\\
 			\hspace*{15pt} \textbf{?}}\\}
 		}
 		{
 		%set the date to the specified date
-			\@adaptivedate[#2][#3][#4]
-				%Adding entry to calendar using @addtocalendar
-				\@addtocalendar{\expandafter\textbf\expandafter{\@currentclass #1\@linedivide{small}{small}}} 
+			\assign@adaptivedate[#2][#3][#4]
+				%Adding entry to calendar using assign@addtocalendar
+				\assign@addtocalendar{\expandafter\textbf\expandafter{\assign@currentclass #1\assign@linedivide{small}{small}}} 
 		}
-	\@donefalse
+	\assign@donefalse
 	%just so no other function is messed up, set the datenumber package date back to the stable date
-	\@makedatestabledate
+	\assign@makedatestabledate
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -370,7 +370,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %command to actually print the item based planner.  No arguments
-\newcommand\printplanner{\raggedright\the\@ibp}
+\newcommand\printplanner{\raggedright\the\assign@ibp}
 %The Calendar Command Syntax: \printcalendar{startdate mm/dd/yyyy}{no. of weeks}
 \newcommand\printcalendar[2]
 {
