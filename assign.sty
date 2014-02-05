@@ -30,12 +30,22 @@
 	%making the \@highcommand into a real highlighting command
 	\renewcommand{\@high}[1]{\hl{#1}}
 }
+\newif\ifboxey
+\boxeyfalse
+\DeclareOption{boxes}{
+	\boxeytrue
+}
 %process the options
 \ProcessOptions\relax
+\ifboxey
+\RequirePackage{wasysym}
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+\newif\ifdone
+\donefalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%%
 %
@@ -87,6 +97,20 @@
 	\leaders\vrule width \linewidth\vskip0.4pt
 	\vskip\csname #2skipamount\endcsname 
 	\nointerlineskip
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\@status}{
+\ifboxey
+	\ifdone
+	{\Huge\CheckedBox}
+	\else
+	{\Huge\Square}
+	\fi
+\else
+\fi
+\donefalse}
+\newcommand{\done}{
+\@addtoplanner{\relax\donetrue}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %repeatedly used date setting function
@@ -141,11 +165,20 @@
 \expandafter\@appendtotokenreg\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
 }
 %adds tokens to planner in a parbox without expanding
+\newlength\@statusspace
+\ifboxey
+\newcommand{\@boxtoplanner}[1]{
+	\@addtoplanner{\relax
+		\parbox{\linewidth-3em}{#1}
+	}
+}
+\else
 \newcommand{\@boxtoplanner}[1]{
 	\@addtoplanner{\relax
 		\parbox{\linewidth}{#1}
 	}
 }
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%EXTERNAL%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -228,7 +261,7 @@
 			%Adding entry to calendar using @addtocalendar
 			\@addtocalendar{\@currentclass #1\@linedivide{small}{small}} 
 		}
-	\@addtoplanner{\relax\\}
+	\@addtoplanner{\relax\@status\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\@makedatestabledate
 }
@@ -285,7 +318,7 @@
 			%Adding entry to calendar using @addtocalendar
 			\@addtocalendar{\@currentclass #1\@linedivide{small}{small}} 
 		}
-		\@addtoplanner{\relax\\}
+		\@addtoplanner{\relax\@status\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\@makedatestabledate
 }
