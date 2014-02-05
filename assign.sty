@@ -114,9 +114,9 @@
 \newcommand{\assign@status}{
 \ifassign@boxey
 	\ifassign@done
-	{\Huge\CheckedBox}
+	{\huge\CheckedBox}
 	\else
-	{\Huge\Square}
+	{\huge\Square}
 	\fi
 \else
 \fi
@@ -181,7 +181,7 @@
 \ifassign@boxey
 \newcommand{\assign@boxtoplanner}[1]{
 	\assign@addtoplanner{\relax
-		\parbox{\linewidth-3em}{#1}
+		\parbox{\linewidth-19pt}{#1}
 	}
 }
 \else
@@ -239,6 +239,7 @@
 	}
 		{
 			%if so, just put the description and the question mark into the token register, never with highlighting
+			\assign@addtoplanner{\relax\assign@status}
 			\assign@boxtoplanner{	
 				{#1}\\
 				\hspace*{15pt} ?
@@ -247,7 +248,8 @@
 		{
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
 			%add the date you know to the register, expanded, but not executed
-			\assign@addtoplanner{\assign@adaptivedate[#2][#3][#4]}				
+			\assign@addtoplanner{\assign@adaptivedate[#2][#3][#4]}	
+			\assign@addtoplanner{\relax\assign@status}			
 			%set the date to the specified date
 			\assign@adaptivedate[#2][#3][#4]
 			%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
@@ -273,7 +275,7 @@
 			%Adding entry to calendar using assign@addtocalendar
 			\assign@addtocalendar{\assign@currentclass #1\assign@linedivide{small}{small}} 
 		}
-	\assign@addtoplanner{\relax\assign@status\\}
+	\assign@addtoplanner{\relax\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\assign@makedatestabledate
 }
@@ -294,6 +296,7 @@
 		test {\IfNoValueTF{#5}}
 	}
 		{
+			\assign@addtoplanner{\relax\assign@status}
 		%if so, just put the title, description and the question mark into the token register, never with highlighting
 			\assign@boxtoplanner{{#1:}\\
 			\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{#2}}\\
@@ -303,6 +306,7 @@
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
 			%add the date you know to the register, expanded, but not executed
 			\assign@addtoplanner{\assign@adaptivedate[#3][#4][#5]}
+			\assign@addtoplanner{\relax\assign@status}
 			%set the date to the specified date
 			\assign@adaptivedate[#3][#4][#5]	
 			%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
@@ -330,7 +334,7 @@
 			%Adding entry to calendar using assign@addtocalendar
 			\assign@addtocalendar{\assign@currentclass #1\assign@linedivide{small}{small}} 
 		}
-		\assign@addtoplanner{\relax\assign@status\\}
+		\assign@addtoplanner{\relax\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\assign@makedatestabledate
 }
@@ -351,8 +355,13 @@
 		{
 		%if so, just put the title and the question mark into the token register, never with highlighting
 			%if not, don't add a description
-			\assign@addtoplanner{\relax\vspace{2pt}\parbox{\linewidth}{{\textbf{#1}}\\
-			\hspace*{15pt} \textbf{?}}\\}
+			\assign@addtoplanner{\relax\vspace{2pt}}
+			\ifassign@boxey
+			\assign@addtoplanner{\hspace{18pt}}
+			\fi
+			\assign@boxtoplanner{{\textbf{#1}}\\
+			\hspace*{15pt} \textbf{?}}
+			\assign@addtoplanner{\relax\\}
 		}
 		{
 		%set the date to the specified date
