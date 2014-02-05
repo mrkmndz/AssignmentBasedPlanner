@@ -47,8 +47,8 @@
 %%%%%%%%%%%%%%VARIABLES%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\newif\ifdone
-\donefalse
+\newif\if@done
+\@donefalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%COUNTERS%%%%%%%%%%%%%%%%%%%%%
 %
@@ -113,16 +113,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\@status}{
 \if@boxey
-	\ifdone
+	\if@done
 	{\Huge\CheckedBox}
 	\else
 	{\Huge\Square}
 	\fi
 \else
 \fi
-\donefalse}
+\@donefalse}
 \newcommand{\done}{
-\@addtoplanner{\relax\donetrue}
+\@addtoplanner{\relax\@donetrue}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %repeatedly used date setting function
@@ -360,7 +360,7 @@
 				%Adding entry to calendar using @addtocalendar
 				\@addtocalendar{\expandafter\textbf\expandafter{\@currentclass #1\@linedivide{small}{small}}} 
 		}
-	\donefalse
+	\@donefalse
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\@makedatestabledate
 }
