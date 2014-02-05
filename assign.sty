@@ -140,7 +140,12 @@
 \newcommand{\@addtoplanner}[1]{
 \expandafter\@appendtotokenreg\expandafter{\expandafter\@ibp\expandafter}\expandafter{#1}
 }
-%
+%adds tokens to planner in a parbox without expanding
+\newcommand{\@boxtoplanner}[1]{
+	\@addtoplanner{\relax
+		\parbox{\linewidth}{#1}
+	}
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%EXTERNAL%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,11 +194,9 @@
 	}
 		{
 			%if so, just put the description and the question mark into the token register, never with highlighting
-			\@addtoplanner{\relax
-				\parbox{\linewidth}{
-					{#1}\\
-					\hspace*{15pt} ?
-				}\\
+			\@boxtoplanner{	
+				{#1}\\
+				\hspace*{15pt} ?
 			}
 		}
 		{
@@ -210,25 +213,22 @@
 			\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
 			{
 				%if so, highlight the assignment, and add it to token register
-				\@addtoplanner{\relax
-				\parbox{\linewidth}{
+				\@boxtoplanner{
 				\@high{#1}\\
 				\hspace*{15pt}\@high{\mbox{\@preentrytail}}
-				}\\
 				}
 			}
 			{
 				%if not, don't highlight the assignment or the due date, add it to token register
-				\@addtoplanner{\relax
-				\parbox{\linewidth}{
+				\@boxtoplanner{
 				{#1}\\
 				\hspace*{15pt}\@preentrytail
-				}\\
 				}
 			}
 			%Adding entry to calendar using @addtocalendar
 			\@addtocalendar{\@currentclass #1\@linedivide{small}{small}} 
 		}
+	\@addtoplanner{\relax\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\@makedatestabledate
 }
@@ -250,9 +250,9 @@
 	}
 		{
 		%if so, just put the title, description and the question mark into the token register, never with highlighting
-			\@addtoplanner{\relax\parbox{\linewidth}{{#1:}\\
+			\@boxtoplanner{{#1:}\\
 			\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{#2}}\\
-			\hspace*{15pt} ?}\\}
+			\hspace*{15pt} ?}
 		}
 		{	
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
@@ -268,27 +268,24 @@
 			\ifnumcomp{\the@assignmentdatenum}{<}{\thehlthreshold}
 			{
 			%if so, highlight the assignment with description, and add it to token register
-				\@addtoplanner{\relax
-					\parbox{\linewidth}{
+				\@boxtoplanner{
 						\@high{#1:}\\
 						\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{\@high{#2}}}\\
 						\hspace*{15pt}\@high{\mbox{\@preentrytail}}
-					}\\
 				}
 			}
 			{
 			%if not, don't highlight the assignment, description or the due date, add it to token register
-				\@addtoplanner{\relax
-					\parbox{\linewidth}{
+				\@boxtoplanner{
 						{#1:}\\
 						\hspace*{15pt}\parbox{\linewidth-15pt}{\emph{#2}}\\
 						\hspace*{15pt}\@preentrytail
-					}\\
 				}
 			}
 			%Adding entry to calendar using @addtocalendar
 			\@addtocalendar{\@currentclass #1\@linedivide{small}{small}} 
 		}
+		\@addtoplanner{\relax\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\@makedatestabledate
 }
