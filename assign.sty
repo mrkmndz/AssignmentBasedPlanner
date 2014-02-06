@@ -198,6 +198,37 @@
 }
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\assign@highlightdefiner }[3]{%
+	%add the date you know to the register, expanded, but not executed
+	\assign@addtoplanner{\assign@adaptivedate[#1][#2][#3]}				
+	%set the date to the specified date
+	\assign@adaptivedate[#1][#2][#3]
+	%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
+	\setmydatenumber{assign@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
+	%find the difference between the two absolute datenums, or the number of days between
+	\addtocounter{assign@assignmentdatenum}{-\theassign@todaysdatenum}%
+	%check if this gap is less than the supplied threshold value or the default, 2
+	\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold}
+	{
+		\assign@addtoplanner{\relax
+			\sethlcolor{yellow}
+			\ifassign@highlight
+				%making the \assign@highcommand into a real highlighting command
+				\renewcommand{\assign@high}[1]{\hl{##1}}
+			\else
+				%if no highlight option, make the highlight command into a dummy command that just passes back the argument
+				\renewcommand{\assign@high}[1]{##1}
+			\fi
+		}
+	}
+	{
+	%if not, don't highlight the assignment, description or the due date, add it to token register
+		\assign@addtoplanner{\relax
+			\renewcommand{\assign@high}[1]{##1}
+		}
+	}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%EXTERNAL%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %for archival purposes, allow a planner to evaluate like its a month it isn't.
@@ -253,34 +284,7 @@
 		}
 		{
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
-			%add the date you know to the register, expanded, but not executed
-			\assign@addtoplanner{\assign@adaptivedate[#2][#3][#4]}				
-			%set the date to the specified date
-			\assign@adaptivedate[#2][#3][#4]
-			%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
-			\setmydatenumber{assign@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
-			%find the difference between the two absolute datenums, or the number of days between
-			\addtocounter{assign@assignmentdatenum}{-\theassign@todaysdatenum}%
-			%check if this gap is less than the supplied threshold value or the default, 2
-			\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold}
-			{
-				\assign@addtoplanner{\relax
-					\sethlcolor{yellow}
-					\ifassign@highlight
-						%making the \assign@highcommand into a real highlighting command
-						\renewcommand{\assign@high}[1]{\hl{##1}}
-					\else
-						%if no highlight option, make the highlight command into a dummy command that just passes back the argument
-						\renewcommand{\assign@high}[1]{##1}
-					\fi
-				}
-			}
-			{
-			%if not, don't highlight the assignment, description or the due date, add it to token register
-				\assign@addtoplanner{\relax
-					\renewcommand{\assign@high}[1]{##1}
-				}
-			}
+			\assign@highlightdefiner{#2}{#3}{#4}
 			\assign@addtoplanner{\relax\assign@status}
 			\assign@boxtoplanner{
 			\assign@high{#1}\\
@@ -318,34 +322,7 @@
 		}
 		{	
 			%for the instances that some optional argument, hence date, has been given, now we'll make the actual formatted entry
-			%add the date you know to the register, expanded, but not executed
-			\assign@addtoplanner{\assign@adaptivedate[#3][#4][#5]}
-			%set the date to the specified date
-			\assign@adaptivedate[#3][#4][#5]	
-			%set the assign@assignmentdatenum to the absolute datenum of the given datenumber package date for the assignment date, not the real date, remember that was set at the top of the function
-			\setmydatenumber{assign@assignmentdatenum}{\thedateyear}{\thedatemonth}{\thedateday}%
-			%find the difference between the two absolute datenums, or the number of days between
-			\addtocounter{assign@assignmentdatenum}{-\theassign@todaysdatenum}%
-			%check if this gap is less than the supplied threshold value or the default, 2
-			\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold}
-			{
-				\assign@addtoplanner{\relax
-					\sethlcolor{yellow}
-					\ifassign@highlight
-						%making the \assign@highcommand into a real highlighting command
-						\renewcommand{\assign@high}[1]{\hl{##1}}
-					\else
-						%if no highlight option, make the highlight command into a dummy command that just passes back the argument
-						\renewcommand{\assign@high}[1]{##1}
-					\fi
-				}
-			}
-			{
-			%if not, don't highlight the assignment, description or the due date, add it to token register
-				\assign@addtoplanner{\relax
-					\renewcommand{\assign@high}[1]{##1}
-				}
-			}
+			\assign@highlightdefiner{#3}{#4}{#5}
 			\assign@addtoplanner{\relax\assign@status}
 			\assign@boxtoplanner{
 					\assign@high{#1:}\\
@@ -355,7 +332,7 @@
 			%Adding entry to calendar using assign@addtocalendar
 			\assign@addtocalendar{\assign@currentclass #1\assign@linedivide{small}{small}} 
 		}
-		\assign@addtoplanner{\relax\\}
+	\assign@addtoplanner{\relax\\}
 	%just so no other function is messed up, set the datenumber package date back to the stable date
 	\assign@makedatestabledate
 }
