@@ -85,7 +85,7 @@
 %number of days between now and an assignment for it to be highlighted
 \newcounter{hlthreshold}
 %default value
-\setcounter{hlthreshold}{2}
+\setcounter{hlthreshold}{1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%REGISTERS%%%%%%%%%%%%%%%%%%%%
 %making token register that will hold the entire item based planner
@@ -232,7 +232,7 @@
 	%find the difference between the two absolute datenums, or the number of days between
 	\addtocounter{assign@assignmentdatenum}{-\theassign@todaysdatenum}%
 	%check if this gap is less than the supplied threshold value or the default, 2
-	\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold}
+	\ifnumcomp{\theassign@assignmentdatenum}{<}{\thehlthreshold+1}
 	{
 		\ifnumcomp{\theassign@assignmentdatenum}{<}{0}
 		{
