@@ -14,6 +14,7 @@
 \DeclareOption{boxes}{
 	\assign@boxeytrue
 }
+%red overdue assignment option
 \newif\ifassign@od
 \assign@odfalse
 \DeclareOption{od}{
@@ -204,9 +205,9 @@
 \fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifassign@od
-	\newcommand{\assign@overduecolor}{red}
+	\definecolor{overduecolor}{rgb}{.768,.118,.227}
 \else
-	\newcommand{\assign@overduecolor}{yellow}
+	\definecolor{overduecolor}{cmyk}{0,0,1,0}
 \fi
 \newcommand{\enablehighlighting}[1]{
 	\sethlcolor{#1}
@@ -236,7 +237,7 @@
 		\ifnumcomp{\theassign@assignmentdatenum}{<}{0}
 		{
 			\assign@addtoplanner{\relax
-				\enablehighlighting{\assign@overduecolor}
+				\enablehighlighting{overduecolor}
 			}
 		}
 		{
